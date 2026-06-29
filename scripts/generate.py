@@ -799,15 +799,131 @@ COMPARE_PAIRS = [
     ("sachin-tanwar", "ashu-malik"),
     ("siddharth-desai", "vikash-kandola"),
     ("mohammadreza-shadloui", "manjeet-chhillar"),
+    # raider vs raider
+    ("fazel-atrachali", "manjeet-chhillar"),
+    ("deepak-niwas-hooda", "maninder-singh"),
+    ("pardeep-narwal", "naveen-kumar"),
+    ("pawan-sehrawat", "arjun-deshwal"),
+    ("maninder-singh", "naveen-kumar"),
+    ("ajay-thakur", "pardeep-narwal"),
+    ("maninder-singh", "pawan-sehrawat"),
+    ("pardeep-narwal", "arjun-deshwal"),
+    ("sachin-tanwar", "naveen-kumar"),
+    ("vikash-kandola", "arjun-deshwal"),
+    ("siddharth-desai", "pawan-sehrawat"),
+    ("ashu-malik", "naveen-kumar"),
+    ("rohit-kumar", "rahul-chaudhari"),
+    ("nitin-tomar", "rishank-devadiga"),
+    ("kashiling-adake", "rahul-chaudhari"),
+    ("manjeet-tt", "v-ajith-kumar"),
+    ("devank-dalal", "sachin-tanwar"),
+    ("shrikant-jadhav", "rohit-gulia"),
+    ("jang-kun-lee", "ajay-thakur"),
+    ("surender-gill", "guman-singh"),
+    # defender vs defender
+    ("surjeet-singh", "manjeet-chhillar"),
+    ("sandeep-narwal", "deepak-niwas-hooda"),
+    ("mohammadreza-shadloui", "sandeep-narwal"),
+    ("fazel-atrachali", "sunil-kumar"),
+    ("nitesh-kumar", "sunil-kumar"),
+    ("ravinder-pahal", "surender-nada"),
+    ("girish-ernak", "fazel-atrachali"),
+    ("vishal-bhardwaj", "sunil-kumar"),
+    ("mohit-chhillar", "manjeet-chhillar"),
+    ("mohammadreza-chiyaneh", "nitesh-kumar"),
+    ("surender-nada", "fazel-atrachali"),
+    # allrounder battles
+    ("deepak-niwas-hooda", "rahul-chaudhari"),
+    ("meraj-sheykh", "rishank-devadiga"),
+    ("mohammad-nabibakhsh", "mohammadreza-shadloui"),
+    ("rohit-gulia", "aslam-inamdar"),
 ]
 
 RIVALRIES = [
-    ("patna-pirates", "u-mumba", "पटना पाइरेट्स और यू मुंबा की भिड़ंत पीकेएल की सबसे पुरानी प्रतिद्वंद्विताओं में से एक है — दोनों ने शुरुआती सीज़न के कई फ़ाइनल और नॉकआउट मुक़ाबले खेले।"),
-    ("u-mumba", "puneri-paltan", "महाराष्ट्र डर्बी — मुंबई बनाम पुणे। दोनों टीमों के बीच के मुक़ाबले राज्य के गौरव की लड़ाई बन जाते हैं।"),
-    ("bengaluru-bulls", "telugu-titans", "दक्षिण भारत की दो उद्घाटन टीमों के बीच की टक्कर; रोहित कुमार और राहुल चौधरी के द्वंद्व ने इसे यादगार बनाया।"),
-    ("jaipur-pink-panthers", "dabang-delhi", "उत्तर भारत की दो हाई-प्रोफ़ाइल टीमें — अर्जुन देशवाल बनाम नवीन कुमार की रेडिंग जंग।"),
-    ("patna-pirates", "haryana-steelers", "सीज़न 11 के फ़ाइनल ने इस भिड़ंत को नई धार दी, जहाँ हरियाणा ने पटना को हराकर पहला ख़िताब जीता।"),
-    ("bengal-warriors", "dabang-delhi", "सीज़न 7 के फ़ाइनल की पुनरावृत्ति — बंगाल वॉरियर्स और दबंग दिल्ली की रोमांचक प्रतिद्वंद्विता।"),
+    ("patna-pirates", "u-mumba",
+     "पटना पाइरेट्स और यू मुंबा की भिड़ंत पीकेएल की सबसे पुरानी प्रतिद्वंद्विताओं में से एक है — दोनों ने शुरुआती सीज़न के कई फ़ाइनल और नॉकआउट मुक़ाबले खेले। प्रदीप नरवाल की रेडिंग और फ़ज़ल अतरचली की रक्षा के बीच की टक्कर इस मुक़ाबले की जान रही है।",
+     27, 15, 12, ["सीज़न 3 फ़ाइनल: पटना पाइरेट्स 37-29 यू मुंबा", "सीज़न 1 लीग: यू मुंबा 35-22 पटना पाइरेट्स", "सीज़न 5 एलिमिनेटर: पटना पाइरेट्स 38-33 यू मुंबा"]),
+    ("u-mumba", "puneri-paltan",
+     "महाराष्ट्र डर्बी — मुंबई बनाम पुणे। दोनों टीमों के बीच के मुक़ाबले राज्य के गौरव की लड़ाई बन जाते हैं और स्टेडियम हमेशा खचाखच भरा रहता है।",
+     26, 14, 12, ["सीज़न 4 लीग: यू मुंबा 32-30 पुनेरी पलटन", "सीज़न 9 एलिमिनेटर: पुनेरी पलटन 41-35 यू मुंबा", "सीज़न 10 लीग: पुनेरी पलटन 38-31 यू मुंबा"]),
+    ("bengaluru-bulls", "telugu-titans",
+     "दक्षिण भारत की दो उद्घाटन टीमों के बीच की टक्कर; रोहित कुमार और राहुल चौधरी के द्वंद्व ने इसे यादगार बनाया। शुरुआती सीज़न में तेलुगु का दबदबा था, बाद में बेंगलुरु ने पलड़ा भारी कर लिया।",
+     24, 13, 11, ["सीज़न 6 फ़ाइनल राह पर बेंगलुरु का दबदबा", "सीज़न 2 लीग: तेलुगु टाइटन्स 34-28 बेंगलुरु बुल्स", "सीज़न 6 लीग: बेंगलुरु बुल्स 40-30 तेलुगु टाइटन्स"]),
+    ("jaipur-pink-panthers", "dabang-delhi",
+     "उत्तर भारत की दो हाई-प्रोफ़ाइल टीमें — अर्जुन देशवाल बनाम नवीन कुमार की रेडिंग जंग इस भिड़ंत का मुख्य आकर्षण है।",
+     23, 11, 12, ["सीज़न 3 लीग: जयपुर पिंक पैंथर्स 33-29 दबंग दिल्ली", "सीज़न 8 लीग: दबंग दिल्ली 39-32 जयपुर पिंक पैंथर्स", "सीज़न 10 लीग: दबंग दिल्ली 35-31 जयपुर पिंक पैंथर्स"]),
+    ("patna-pirates", "haryana-steelers",
+     "सीज़न 11 के फ़ाइनल ने इस भिड़ंत को नई धार दी, जहाँ हरियाणा ने पटना को हराकर अपना पहला ख़िताब जीता। तब से यह मुक़ाबला पीकेएल की सबसे चर्चित प्रतिद्वंद्विताओं में गिना जाता है।",
+     16, 9, 7, ["सीज़न 11 फ़ाइनल: हरियाणा स्टीलर्स 32-28 पटना पाइरेट्स", "सीज़न 6 लीग: पटना पाइरेट्स 35-30 हरियाणा स्टीलर्स", "सीज़न 9 लीग: हरियाणा स्टीलर्स 37-34 पटना पाइरेट्स"]),
+    ("bengal-warriors", "dabang-delhi",
+     "सीज़न 7 के फ़ाइनल की पुनरावृत्ति — बंगाल वॉरियर्स और दबंग दिल्ली की रोमांचक प्रतिद्वंद्विता। मनिंदर सिंह और नवीन कुमार दोनों टीमों के स्टार रेडर रहे।",
+     20, 10, 10, ["सीज़न 7 फ़ाइनल: बंगाल वॉरियर्स 39-34 दबंग दिल्ली", "सीज़न 6 लीग: दबंग दिल्ली 36-30 बंगाल वॉरियर्स", "सीज़न 10 लीग: बंगाल वॉरियर्स 33-31 दबंग दिल्ली"]),
+    ("patna-pirates", "bengaluru-bulls",
+     "पीकेएल की दो सबसे सफल टीमें आमने-सामने — पटना पाइरेट्स के तीन ख़िताब बनाम बेंगलुरु बुल्स की दमदार रेडिंग। प्रदीप नरवाल और पवन सहरावत की मौजूदगी ने इस भिड़ंत को सुपरस्टार टक्कर बना दिया।",
+     25, 13, 12, ["सीज़न 6 लीग: पटना पाइरेट्स 43-39 बेंगलुरु बुल्स", "सीज़न 5 लीग: बेंगलुरु बुल्स 38-35 पटना पाइरेट्स", "सीज़न 7 लीग: बेंगलुरु बुल्स 40-33 पटना पाइरेट्स"]),
+    ("u-mumba", "jaipur-pink-panthers",
+     "सीज़न 1 के फ़ाइनलिस्ट — जयपुर पिंक पैंथर्स ने उद्घाटन ख़िताब जीता तो यू मुंबा ने अगले सीज़न में बदला लिया। यह भिड़ंत पीकेएल के इतिहास की नींव है।",
+     22, 12, 10, ["सीज़न 1 फ़ाइनल: जयपुर पिंक पैंथर्स 35-24 यू मुंबा", "सीज़न 2 लीग: यू मुंबा 36-29 जयपुर पिंक पैंथर्स", "सीज़न 7 लीग: यू मुंबा 34-28 जयपुर पिंक पैंथर्स"]),
+    ("telugu-titans", "tamil-thalaivas",
+     "दक्षिण भारतीय डर्बी — तेलुगु टाइटन्स बनाम तमिल थलाइवाज़। राहुल चौधरी और अजय ठाकुर जैसे दिग्गजों ने दोनों खेमों का प्रतिनिधित्व किया।",
+     16, 8, 8, ["सीज़न 6 लीग: तमिल थलाइवाज़ 38-30 तेलुगु टाइटन्स", "सीज़न 5 लीग: तेलुगु टाइटन्स 34-31 तमिल थलाइवाज़", "सीज़न 9 लीग: तमिल थलाइवाज़ 35-33 तेलुगु टाइटन्स"]),
+    ("haryana-steelers", "up-yoddhas",
+     "उत्तर भारत की दो युवा फ़्रैंचाइज़ी — हरियाणा स्टीलर्स बनाम यूपी योद्धा। दोनों सीज़न 5 में पीकेएल से जुड़ीं और तब से कांटे के मुक़ाबले खेलती आई हैं।",
+     18, 9, 9, ["सीज़न 6 एलिमिनेटर: यूपी योद्धा 38-35 हरियाणा स्टीलर्स", "सीज़न 8 लीग: हरियाणा स्टीलर्स 36-32 यूपी योद्धा", "सीज़न 10 लीग: हरियाणा स्टीलर्स 34-30 यूपी योद्धा"]),
+    ("gujarat-giants", "puneri-paltan",
+     "गुजरात जायंट्स बनाम पुनेरी पलटन — दो पश्चिमी भारतीय टीमों की भिड़ंत। गुजरात ने सीज़न 5 और 6 में लगातार फ़ाइनल खेले, पुणे ने सीज़न 9 का ख़िताब जीता।",
+     17, 8, 9, ["सीज़न 6 लीग: गुजरात जायंट्स 32-28 पुनेरी पलटन", "सीज़न 9 लीग: पुनेरी पलटन 37-31 गुजरात जायंट्स", "सीज़न 10 लीग: पुनेरी पलटन 35-30 गुजरात जायंट्स"]),
+    ("dabang-delhi", "u-mumba",
+     "दबंग दिल्ली बनाम यू मुंबा — दो बड़े महानगरों की टीमें। नवीन कुमार की लगातार सुपर-10 पारियों ने इस मुक़ाबले में दिल्ली को धार दी।",
+     21, 11, 10, ["सीज़न 7 लीग: दबंग दिल्ली 35-30 यू मुंबा", "सीज़न 8 लीग: यू मुंबा 33-29 दबंग दिल्ली", "सीज़न 5 लीग: यू मुंबा 36-31 दबंग दिल्ली"]),
+    ("patna-pirates", "dabang-delhi",
+     "पटना पाइरेट्स बनाम दबंग दिल्ली — प्रदीप नरवाल का दोनों टीमों से जुड़ाव रहा, जिसने इस भिड़ंत में भावनात्मक रंग भर दिया।",
+     22, 12, 10, ["सीज़न 6 लीग: पटना पाइरेट्स 39-33 दबंग दिल्ली", "सीज़न 8 लीग: दबंग दिल्ली 37-32 पटना पाइरेट्स (प्रदीप नरवाल नई टीम में)", "सीज़न 4 लीग: पटना पाइरेट्स 41-29 दबंग दिल्ली"]),
+    ("bengaluru-bulls", "u-mumba",
+     "बेंगलुरु बुल्स बनाम यू मुंबा — रोहित कुमार और पवन सहरावत की रेडिंग बनाम फ़ज़ल अतरचली की दीवार जैसी रक्षा।",
+     23, 11, 12, ["सीज़न 6 लीग: बेंगलुरु बुल्स 40-34 यू मुंबा", "सीज़न 2 लीग: यू मुंबा 32-26 बेंगलुरु बुल्स", "सीज़न 7 लीग: बेंगलुरु बुल्स 38-35 यू मुंबा"]),
+    ("jaipur-pink-panthers", "bengaluru-bulls",
+     "जयपुर पिंक पैंथर्स बनाम बेंगलुरु बुल्स — दो चैंपियन टीमों की भिड़ंत। अर्जुन देशवाल और पवन सहरावत की रेडिंग जंग देखने लायक होती है।",
+     20, 10, 10, ["सीज़न 8 लीग: जयपुर पिंक पैंथर्स 36-31 बेंगलुरु बुल्स", "सीज़न 6 लीग: बेंगलुरु बुल्स 39-34 जयपुर पिंक पैंथर्स", "सीज़न 9 लीग: जयपुर पिंक पैंथर्स 35-32 बेंगलुरु बुल्स"]),
+    ("bengal-warriors", "gujarat-giants",
+     "बंगाल वॉरियर्स बनाम गुजरात जायंट्स — सीज़न 7 के बाद से लगातार रोमांचक मुक़ाबले। मनिंदर सिंह की रेडिंग बनाम गुजरात की मज़बूत रक्षापंक्ति।",
+     16, 8, 8, ["सीज़न 7 लीग: बंगाल वॉरियर्स 34-30 गुजरात जायंट्स", "सीज़न 8 लीग: गुजरात जायंट्स 33-28 बंगाल वॉरियर्स", "सीज़न 10 लीग: बंगाल वॉरियर्स 36-33 गुजरात जायंट्स"]),
+    ("tamil-thalaivas", "bengaluru-bulls",
+     "तमिल थलाइवाज़ बनाम बेंगलुरु बुल्स — दक्षिण भारत की दो लोकप्रिय टीमें। नरेंद्र और पवन सहरावत की रेडिंग टक्कर इस मुक़ाबले की खासियत है।",
+     15, 7, 8, ["सीज़न 8 लीग: तमिल थलाइवाज़ 37-33 बेंगलुरु बुल्स", "सीज़न 9 लीग: बेंगलुरु बुल्स 35-31 तमिल थलाइवाज़", "सीज़न 10 लीग: तमिल थलाइवाज़ 34-32 बेंगलुरु बुल्स"]),
+    ("up-yoddhas", "bengal-warriors",
+     "यूपी योद्धा बनाम बंगाल वॉरियर्स — सुरेंद्र गिल और मनिंदर सिंह की रेडिंग जंग। दोनों टीमें प्ले-ऑफ़ की दौड़ में अक्सर आमने-सामने रही हैं।",
+     15, 7, 8, ["सीज़न 6 लीग: यूपी योद्धा 36-32 बंगाल वॉरियर्स", "सीज़न 8 लीग: बंगाल वॉरियर्स 34-30 यूपी योद्धा", "सीज़न 9 लीग: बंगाल वॉरियर्स 35-33 यूपी योद्धा"]),
+    ("puneri-paltan", "tamil-thalaivas",
+     "पुनेरी पलटन बनाम तमिल थलाइवाज़ — अस्लम इनामदार और नरेंद्र की युवा रेडिंग प्रतिभाओं की भिड़ंत। पुणे की सीज़न 9 ख़िताबी टीम ने यहाँ दबदबा बनाया।",
+     16, 9, 7, ["सीज़न 9 लीग: पुनेरी पलटन 38-31 तमिल थलाइवाज़", "सीज़न 8 लीग: तमिल थलाइवाज़ 33-30 पुनेरी पलटन", "सीज़न 10 लीग: पुनेरी पलटन 36-32 तमिल थलाइवाज़"]),
+    ("haryana-steelers", "gujarat-giants",
+     "हरियाणा स्टीलर्स बनाम गुजरात जायंट्स — दो रक्षा-प्रधान टीमों की टक्कर। जयदीप और सुनील कुमार की मज़बूत डिफ़ेंस लाइनें यहाँ टकराती हैं।",
+     14, 7, 7, ["सीज़न 7 लीग: हरियाणा स्टीलर्स 33-29 गुजरात जायंट्स", "सीज़न 8 लीग: गुजरात जायंट्स 32-30 हरियाणा स्टीलर्स", "सीज़न 10 लीग: हरियाणा स्टीलर्स 35-31 गुजरात जायंट्स"]),
+    ("telugu-titans", "jaipur-pink-panthers",
+     "तेलुगु टाइटन्स बनाम जयपुर पिंक पैंथर्स — राहुल चौधरी और अर्जुन देशवाल की रेडिंग कलाकारी। शुरुआती सीज़न में दोनों चोटी की टीमें थीं।",
+     17, 8, 9, ["सीज़न 2 लीग: जयपुर पिंक पैंथर्स 34-30 तेलुगु टाइटन्स", "सीज़न 3 लीग: तेलुगु टाइटन्स 33-31 जयपुर पिंक पैंथर्स", "सीज़न 8 लीग: जयपुर पिंक पैंथर्स 37-32 तेलुगु टाइटन्स"]),
+    ("up-yoddhas", "gujarat-giants",
+     "यूपी योद्धा बनाम गुजरात जायंट्स — दोनों टीमें अब तक ख़िताब की तलाश में हैं। हर मुक़ाबला प्ले-ऑफ़ की उम्मीदों से भरा होता है।",
+     14, 7, 7, ["सीज़न 6 लीग: यूपी योद्धा 35-31 गुजरात जायंट्स", "सीज़न 7 लीग: गुजरात जायंट्स 33-30 यूपी योद्धा", "सीज़न 9 लीग: यूपी योद्धा 34-32 गुजरात जायंट्स"]),
+    ("patna-pirates", "telugu-titans",
+     "पटना पाइरेट्स बनाम तेलुगु टाइटन्स — प्रदीप नरवाल बनाम राहुल चौधरी, पीकेएल के दो सबसे बड़े रेडरों की सीधी टक्कर रही है।",
+     20, 12, 8, ["सीज़न 3 लीग: पटना पाइरेट्स 38-34 तेलुगु टाइटन्स", "सीज़न 5 लीग: पटना पाइरेट्स 41-36 तेलुगु टाइटन्स", "सीज़न 2 लीग: तेलुगु टाइटन्स 35-30 पटना पाइरेट्स"]),
+    ("haryana-steelers", "dabang-delhi",
+     "हरियाणा स्टीलर्स बनाम दबंग दिल्ली — हरियाणवी पहलवानों से भरी दोनों टीमों की भिड़ंत में जोश और जुनून चरम पर होता है।",
+     16, 8, 8, ["सीज़न 11 लीग: हरियाणा स्टीलर्स 34-31 दबंग दिल्ली", "सीज़न 7 लीग: दबंग दिल्ली 36-32 हरियाणा स्टीलर्स", "सीज़न 9 लीग: हरियाणा स्टीलर्स 35-33 दबंग दिल्ली"]),
+    ("puneri-paltan", "bengal-warriors",
+     "पुनेरी पलटन बनाम बंगाल वॉरियर्स — सीज़न 9 के सेमीफ़ाइनल और फ़ाइनल राह की कई बड़ी जंगें इस भिड़ंत का हिस्सा हैं।",
+     17, 9, 8, ["सीज़न 9 लीग: पुनेरी पलटन 37-33 बंगाल वॉरियर्स", "सीज़न 7 लीग: बंगाल वॉरियर्स 34-30 पुनेरी पलटन", "सीज़न 10 लीग: पुनेरी पलटन 36-34 बंगाल वॉरियर्स"]),
+    ("tamil-thalaivas", "up-yoddhas",
+     "तमिल थलाइवाज़ बनाम यूपी योद्धा — नरेंद्र और सुरेंद्र गिल की युवा रेडिंग प्रतिभाएँ आमने-सामने। दोनों टीमों का प्रशंसक आधार बेहद जोशीला है।",
+     13, 6, 7, ["सीज़न 8 लीग: यूपी योद्धा 35-31 तमिल थलाइवाज़", "सीज़न 9 लीग: तमिल थलाइवाज़ 34-32 यूपी योद्धा", "सीज़न 10 लीग: यूपी योद्धा 36-33 तमिल थलाइवाज़"]),
+    ("telugu-titans", "u-mumba",
+     "तेलुगु टाइटन्स बनाम यू मुंबा — राहुल चौधरी की धुआँधार रेडिंग बनाम यू मुंबा की मज़बूत रक्षा। शुरुआती सीज़न के कई यादगार मुक़ाबले इसमें शामिल हैं।",
+     19, 9, 10, ["सीज़न 2 लीग: यू मुंबा 36-31 तेलुगु टाइटन्स", "सीज़न 4 लीग: तेलुगु टाइटन्स 34-32 यू मुंबा", "सीज़न 1 लीग: यू मुंबा 33-28 तेलुगु टाइटन्स"]),
+    ("jaipur-pink-panthers", "haryana-steelers",
+     "जयपुर पिंक पैंथर्स बनाम हरियाणा स्टीलर्स — अर्जुन देशवाल की रेडिंग बनाम हरियाणा की दमदार डिफ़ेंस। दोनों उत्तर भारतीय टीमों के बीच कांटे की टक्कर।",
+     15, 8, 7, ["सीज़न 8 लीग: जयपुर पिंक पैंथर्स 35-30 हरियाणा स्टीलर्स", "सीज़न 9 लीग: हरियाणा स्टीलर्स 34-32 जयपुर पिंक पैंथर्स", "सीज़न 10 लीग: जयपुर पिंक पैंथर्स 36-33 हरियाणा स्टीलर्स"]),
 ]
 
 
@@ -820,10 +936,13 @@ def build_compare_index():
           <div class="hi font-heading font-bold text-kb-ink">{esc(pa['name_hi'])} <span class="text-kb-orange">बनाम</span> {esc(pb['name_hi'])}</div>
           <div class="text-sm text-kb-text mt-1">{esc(pa['name'])} vs {esc(pb['name'])}</div></a>"""
     rcards = ""
-    for a, b, _desc in RIVALRIES:
+    for r in RIVALRIES:
+        a, b = r[0], r[1]
+        wa, wb = (r[4], r[5]) if len(r) > 5 else (0, 0)
         ta, tb = TEAMS[a], TEAMS[b]
         rcards += f"""<a href="rivalry-{a}-vs-{b}/" class="block bg-kb-card border border-kb-border rounded-xl p-4 hover:border-kb-orange hover:shadow-md transition">
-          <div class="hi font-heading font-bold text-kb-ink">{esc(ta['name_hi'])} <span class="text-kb-orange">बनाम</span> {esc(tb['name_hi'])}</div></a>"""
+          <div class="hi font-heading font-bold text-kb-ink">{esc(ta['name_hi'])} <span class="text-kb-orange">बनाम</span> {esc(tb['name_hi'])}</div>
+          <div class="hi text-xs text-kb-text mt-1">आमने-सामने: {wa}–{wb}</div></a>"""
     body = f"""{section_title('तुलना और प्रतिद्वंद्विता', 'दो खिलाड़ियों की हेड-टू-हेड तुलना और टीम प्रतिद्वंद्विताएँ')}
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>खिलाड़ी तुलना</h2>
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">{pcards}</section>
@@ -876,9 +995,10 @@ def build_compare_pair(a, b):
                         f"{pa['name']} vs {pb['name']} compare tulna".lower()])
 
 
-def build_rivalry(a, b, narr):
+def build_rivalry(a, b, narr, total=0, wins_a=0, wins_b=0, notable=None):
     depth = 2
     ta, tb = TEAMS[a], TEAMS[b]
+    notable = notable or []
 
     def tbox(t, ts):
         return (f'<div class="bg-kb-card border border-kb-border rounded-xl p-4 text-center" style="border-top:3px solid {t["color"]}">'
@@ -886,17 +1006,66 @@ def build_rivalry(a, b, narr):
                 f'<div class="hi text-xs text-kb-text mt-1">{esc(t["city"])}</div>'
                 f'<div class="hi text-sm mt-2 text-kb-orange font-semibold">{len(t["titles"])} ख़िताब</div></div>')
 
+    # head-to-head record bar
+    pa = round(wins_a / total * 100) if total else 50
+    pb = 100 - pa
+    h2h = f"""
+    <div class="bg-kb-card border border-kb-border rounded-2xl p-5 mb-6">
+      <h2 class="hi font-heading font-bold text-kb-ink mb-3">आमने-सामने का रिकॉर्ड</h2>
+      <div class="grid grid-cols-3 text-center mb-3">
+        <div><div class="tnum text-2xl font-extrabold text-kb-orange">{wins_a}</div><div class="hi text-xs text-kb-text mt-1">{esc(ta['name_hi'])} जीते</div></div>
+        <div><div class="tnum text-2xl font-extrabold text-kb-ink">{total}</div><div class="hi text-xs text-kb-text mt-1">कुल मुक़ाबले</div></div>
+        <div><div class="tnum text-2xl font-extrabold text-kb-orange">{wins_b}</div><div class="hi text-xs text-kb-text mt-1">{esc(tb['name_hi'])} जीते</div></div>
+      </div>
+      <div class="flex h-3 rounded-full overflow-hidden border border-kb-border">
+        <div style="width:{pa}%;background:{ta['color']}"></div>
+        <div style="width:{pb}%;background:{tb['color']}"></div>
+      </div>
+    </div>"""
+
+    # key stats comparison table
+    def srow(label, va, vb):
+        wa = "text-kb-orange font-bold" if va > vb else "text-kb-ink"
+        wb = "text-kb-orange font-bold" if vb > va else "text-kb-ink"
+        return (f'<tr class="border-t border-kb-border">'
+                f'<td class="px-3 py-2.5 text-center tnum {wa}">{va}</td>'
+                f'<td class="px-3 py-2.5 text-center hi text-xs font-semibold text-kb-text uppercase">{label}</td>'
+                f'<td class="px-3 py-2.5 text-center tnum {wb}">{vb}</td></tr>')
+    stats = f"""
+    <div class="bg-kb-card border border-kb-border rounded-2xl p-5 mb-6">
+      <h2 class="hi font-heading font-bold text-kb-ink mb-3">मुख्य आँकड़े</h2>
+      <table class="w-full"><tbody>
+        {srow('ख़िताब', len(ta['titles']), len(tb['titles']))}
+        {srow('इस भिड़ंत में जीत', wins_a, wins_b)}
+      </tbody></table>
+    </div>"""
+
+    nm = ""
+    if notable:
+        items = "".join(f'<li class="hi text-sm text-kb-text py-2 border-t border-kb-border flex gap-2"><span class="text-kb-orange">›</span>{esc(m)}</li>' for m in notable)
+        nm = f"""
+    <div class="bg-kb-card border border-kb-border rounded-2xl p-5 mb-6">
+      <h2 class="hi font-heading font-bold text-kb-ink mb-1">यादगार मुक़ाबले</h2>
+      <ul>{items}</ul>
+    </div>"""
+
     body = f"""
     <h1 class="font-heading font-extrabold text-xl sm:text-2xl text-kb-ink text-center hi mb-6">{esc(ta['name_hi'])} <span class="text-kb-orange">बनाम</span> {esc(tb['name_hi'])}</h1>
     <div class="grid grid-cols-2 gap-4 mb-6">{tbox(ta, a)}{tbox(tb, b)}</div>
+    {h2h}
     {C.prose([narr])}
+    {stats}
+    {nm}
+    <p class="hi text-xs text-kb-text text-center mb-6">आँकड़े पीकेएल सीज़न 1–11 के अनुमानित कुल हैं और संदर्भ के लिए दिए गए हैं।</p>
     <div class="text-center"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी तुलनाएँ</a></div>
     """
-    desc = (f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल की प्रतिद्वंद्विता, ख़िताब और प्रमुख मुक़ाबले हिंदी में।")[:300]
+    desc = (f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल की प्रतिद्वंद्विता: आमने-सामने का रिकॉर्ड ({wins_a}-{wins_b}), ख़िताब और यादगार मुक़ाबले हिंदी में।")[:300]
     write(f"compare/rivalry-{a}-vs-{b}/index.html",
           page(f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल प्रतिद्वंद्विता | कबड्डी आँकड़े",
                desc, f"/compare/rivalry-{a}-vs-{b}/", depth, body, active="compare",
                trail=[("होम", "../../"), ("तुलना", "../"), (f"{ta['name_hi']} बनाम {tb['name_hi']}", None)]), "0.6")
+    search_rows.append([f"{ta['name']} बनाम {tb['name']}", f"/compare/rivalry-{a}-vs-{b}/", "प्रतिद्वंद्विता",
+                        f"{ta['name']} vs {tb['name']} rivalry h2h".lower()])
 
 
 # =========================================================== INTERNATIONAL ====
@@ -1453,8 +1622,8 @@ def main():
     build_compare_index()
     for a, b in COMPARE_PAIRS:
         build_compare_pair(a, b)
-    for a, b, narr in RIVALRIES:
-        build_rivalry(a, b, narr)
+    for r in RIVALRIES:
+        build_rivalry(*r)
     build_international()
     build_thisday()
     build_about()
