@@ -1096,3 +1096,144 @@ VENUES = [
 ]
 
 VENUE_BY_SLUG = {v["slug"]: v for v in VENUES}
+
+# ============================================================ AUCTIONS ========
+# पीकेएल खिलाड़ी नीलामी। कीमतें लाख में (1 करोड़ = 100 लाख); ये प्रसिद्ध हेडलाइन
+# आँकड़े हैं और अनुमानित हो सकती हैं।
+# प्रत्येक buy: slug (खिलाड़ी प्रोफ़ाइल हो तो), name, name_hi, team (टीम slug), lakh.
+def _b(slug, name, name_hi, team, lakh):
+    return dict(slug=slug, name=name, name_hi=name_hi, team=team, lakh=lakh)
+
+
+AUCTIONS = {
+    1: dict(year="2014", purse_hi="लगभग ₹2.5 करोड़ प्रति टीम",
+            note="पीकेएल की पहली खिलाड़ी नीलामी अगस्त 2014 में हुई। उस दौर में कीमतें "
+                 "लाखों में थीं — रकेश कुमार सबसे महँगे भारतीय खिलाड़ी रहे।",
+            buys=[
+                _b("rakesh-kumar", "Rakesh Kumar", "रकेश कुमार", "patna-pirates", 12.80),
+                _b("manjeet-chhillar", "Manjeet Chhillar", "मनजीत छिल्लर", "bengaluru-bulls", 12.50),
+                _b("anup-kumar", "Anup Kumar", "अनुप कुमार", "u-mumba", 12.00),
+                _b("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "telugu-titans", 11.00),
+                _b("deepak-niwas-hooda", "Deepak Niwas Hooda", "दीपक निवास हुड्डा", "puneri-paltan", 10.50),
+                _b("dharmaraj-cheralathan", "Dharmaraj Cheralathan", "धर्मराज चेरालाथन", "u-mumba", 9.00),
+            ]),
+    2: dict(year="2015", purse_hi="लगभग ₹3 करोड़ प्रति टीम",
+            note="सीज़न 2 से पहले अधिकतर टीमों ने अपने मुख्य खिलाड़ी बरकरार रखे; नीलामी "
+                 "में कीमतें पहले सीज़न के स्तर के आसपास ही रहीं।",
+            buys=[
+                _b("kashiling-adake", "Kashiling Adake", "काशीलिंग अडके", "dabang-delhi", 14.00),
+                _b("rishank-devadiga", "Rishank Devadiga", "ऋषांक देवडिगा", "u-mumba", 13.00),
+                _b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "puneri-paltan", 12.00),
+                _b("shabeer-bapu", "Shabeer Bapu", "शबीर बापू", "telugu-titans", 11.00),
+            ]),
+    3: dict(year="2016", purse_hi="लगभग ₹3 करोड़ प्रति टीम",
+            note="सीज़न 3 (2016) की नीलामी में युवा रेडरों की माँग बढ़ी; प्रदीप नरवाल "
+                 "जैसे सितारे उभरने लगे।",
+            buys=[
+                _b("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "patna-pirates", 20.00),
+                _b("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates", 18.00),
+                _b("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "telugu-titans", 16.50),
+                _b("ajay-thakur", "Ajay Thakur", "अजय ठाकुर", "puneri-paltan", 15.00),
+            ]),
+    4: dict(year="2016", purse_hi="लगभग ₹4 करोड़ प्रति टीम",
+            note="सीज़न 4 उसी साल (2016) के अंत में खेला गया; अधिकतर दल बरकरार रहे और "
+                 "नीलामी सीमित रही।",
+            buys=[
+                _b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "puneri-paltan", 23.00),
+                _b("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates", 22.00),
+                _b("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "telugu-titans", 20.00),
+                _b("manjeet-chhillar", "Manjeet Chhillar", "मनजीत छिल्लर", "puneri-paltan", 18.00),
+            ]),
+    5: dict(year="2017", purse_hi="₹4 करोड़ वेतन सीमा प्रति टीम",
+            note="सीज़न 5 (2017) में लीग 8 से 12 टीमों तक बढ़ी और पर्स बढ़कर ₹4 करोड़ "
+                 "हुआ। नितिन तोमर ₹93 लाख में उस समय के सबसे महँगे खिलाड़ी बने।",
+            buys=[
+                _b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", 93.00),
+                _b("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "bengaluru-bulls", 81.00),
+                _b("nitin-rawal", "Nitin Rawal", "नितिन रावल", "u-mumba", 36.00),
+                _b("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "telugu-titans", 35.00),
+                _b("surjeet-singh", "Surjeet Singh", "सुरजीत सिंह", "tamil-thalaivas", 33.00),
+            ]),
+    6: dict(year="2018", purse_hi="₹4 करोड़ वेतन सीमा प्रति टीम",
+            note="सीज़न 6 (2018) की नीलामी ऐतिहासिक रही — मोनू गोयत ₹1.51 करोड़ में पीकेएल "
+                 "इतिहास के पहले 'करोड़पति' खिलाड़ी बने।",
+            buys=[
+                _b("monu-goyat", "Monu Goyat", "मोनू गोयत", "haryana-steelers", 151.00),
+                _b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", 116.00),
+                _b("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "bengaluru-bulls", 83.00),
+                _b("deepak-niwas-hooda", "Deepak Niwas Hooda", "दीपक निवास हुड्डा", "jaipur-pink-panthers", 87.00),
+                _b("girish-ernak", "Girish Ernak", "गिरीश एर्नाक", "u-mumba", 77.00),
+            ]),
+    7: dict(year="2019", purse_hi="₹4 करोड़ वेतन सीमा प्रति टीम",
+            note="सीज़न 7 (2019) की नीलामी में कई करोड़पति बने। सिद्धार्थ देसाई ₹1.45 करोड़ "
+                 "में सबसे महँगे खिलाड़ी रहे।",
+            buys=[
+                _b("siddharth-desai", "Siddharth Desai", "सिद्धार्थ देसाई", "telugu-titans", 145.00),
+                _b("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "tamil-thalaivas", 129.00),
+                _b("deepak-niwas-hooda", "Deepak Niwas Hooda", "दीपक निवास हुड्डा", "jaipur-pink-panthers", 115.00),
+                _b("monu-goyat", "Monu Goyat", "मोनू गोयत", "patna-pirates", 96.00),
+                _b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", 77.00),
+            ]),
+    8: dict(year="2021", purse_hi="₹4 करोड़ वेतन सीमा प्रति टीम",
+            note="सीज़न 8 (2021) की नीलामी में प्रदीप नरवाल ₹1.65 करोड़ में बिककर उस समय "
+                 "के पीकेएल इतिहास के सबसे महँगे खिलाड़ी बन गए।",
+            buys=[
+                _b("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "up-yoddhas", 165.00),
+                _b("siddharth-desai", "Siddharth Desai", "सिद्धार्थ देसाई", "u-mumba", 130.00),
+                _b("fazel-atrachali", "Fazel Atrachali", "फ़ज़ल अत्राचली", "u-mumba", 100.00),
+                _b("naveen-kumar", "Naveen Kumar", "नवीन कुमार", "dabang-delhi", 98.00),
+                _b("sandeep-narwal", "Sandeep Narwal", "संदीप नरवाल", "patna-pirates", 77.00),
+            ]),
+    9: dict(year="2022", purse_hi="₹5 करोड़ वेतन सीमा प्रति टीम",
+            note="सीज़न 9 (2022) की नीलामी में पवन सहरावत ₹2.605 करोड़ में बिककर पीकेएल "
+                 "इतिहास के सर्वकालिक सबसे महँगे खिलाड़ी बने।",
+            buys=[
+                _b("pawan-sehrawat", "Pawan Sehrawat", "पवन सहरावत", "telugu-titans", 260.50),
+                _b("maninder-singh", "Maninder Singh", "मनिंदर सिंह", "bengal-warriors", 96.00),
+                _b("vikash-kandola", "Vikash Kandola", "विकाश कंडोला", "haryana-steelers", 90.00),
+                _b("sachin-tanwar", "Sachin Tanwar", "सचिन तंवर", "gujarat-giants", 88.00),
+                _b("surender-gill", "Surender Gill", "सुरेंद्र गिल", "up-yoddhas", 85.00),
+                _b("guman-singh", "Guman Singh", "गुमान सिंह", "gujarat-giants", 77.00),
+            ]),
+    10: dict(year="2023", purse_hi="₹5 करोड़ वेतन सीमा प्रति टीम",
+             note="सीज़न 10 (2023) की नीलामी में अधिकतर टीमों ने अपने स्टार बरकरार रखे; "
+                  "युवा भारतीय रेडरों पर अच्छी बोलियाँ लगीं।",
+             buys=[
+                 _b("ashu-malik", "Ashu Malik", "आशु मलिक", "dabang-delhi", 75.00),
+                 _b("fazel-atrachali", "Fazel Atrachali", "फ़ज़ल अत्राचली", "gujarat-giants", 72.00),
+                 _b("vishal-bhardwaj", "Vishal Bhardwaj", "विशाल भारद्वाज", "telugu-titans", 68.00),
+                 _b("sachin-tanwar", "Sachin Tanwar", "सचिन तंवर", "tamil-thalaivas", 65.00),
+             ]),
+    11: dict(year="2024", purse_hi="₹5 करोड़ वेतन सीमा प्रति टीम",
+             note="सीज़न 11 (2024) की नीलामी में मोहम्मदरेज़ा शादलोई ₹2.345 करोड़ में बिककर "
+                  "किसी भी सीज़न के सबसे महँगे और सर्वकालिक सबसे महँगे विदेशी खिलाड़ी बने।",
+             buys=[
+                 _b("mohammadreza-shadloui", "Mohammadreza Shadloui", "मोहम्मदरेज़ा शादलोई", "puneri-paltan", 234.50),
+                 _b("devank-dalal", "Devank Dalal", "देवांक दलाल", "patna-pirates", 70.00),
+                 _b("aslam-inamdar", "Aslam Inamdar", "अस्लम इनामदार", "puneri-paltan", 70.00),
+                 _b("nitesh-kumar", "Nitesh Kumar", "नितेश कुमार", "tamil-thalaivas", 68.00),
+                 _b("sunil-kumar", "Sunil Kumar", "सुनील कुमार", "jaipur-pink-panthers", 60.00),
+             ]),
+}
+
+# सर्वकालिक सबसे महँगे पीकेएल खिलाड़ी (नीलामी)। season = जिस सीज़न की नीलामी।
+ALL_TIME_EXPENSIVE = [
+    dict(season=9,  year="2022", **_b("pawan-sehrawat", "Pawan Sehrawat", "पवन सहरावत", "telugu-titans", 260.50)),
+    dict(season=11, year="2024", **_b("mohammadreza-shadloui", "Mohammadreza Shadloui", "मोहम्मदरेज़ा शादलोई", "puneri-paltan", 234.50)),
+    dict(season=8,  year="2021", **_b("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "up-yoddhas", 165.00)),
+    dict(season=6,  year="2018", **_b("monu-goyat", "Monu Goyat", "मोनू गोयत", "haryana-steelers", 151.00)),
+    dict(season=7,  year="2019", **_b("siddharth-desai", "Siddharth Desai", "सिद्धार्थ देसाई", "telugu-titans", 145.00)),
+    dict(season=8,  year="2021", **_b("siddharth-desai", "Siddharth Desai", "सिद्धार्थ देसाई", "u-mumba", 130.00)),
+    dict(season=7,  year="2019", **_b("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "tamil-thalaivas", 129.00)),
+    dict(season=6,  year="2018", **_b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", 116.00)),
+    dict(season=7,  year="2019", **_b("deepak-niwas-hooda", "Deepak Niwas Hooda", "दीपक निवास हुड्डा", "jaipur-pink-panthers", 115.00)),
+    dict(season=8,  year="2021", **_b("fazel-atrachali", "Fazel Atrachali", "फ़ज़ल अत्राचली", "u-mumba", 100.00)),
+    dict(season=8,  year="2021", **_b("naveen-kumar", "Naveen Kumar", "नवीन कुमार", "dabang-delhi", 98.00)),
+    dict(season=9,  year="2022", **_b("maninder-singh", "Maninder Singh", "मनिंदर सिंह", "bengal-warriors", 96.00)),
+    dict(season=7,  year="2019", **_b("monu-goyat", "Monu Goyat", "मोनू गोयत", "patna-pirates", 96.00)),
+    dict(season=5,  year="2017", **_b("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", 93.00)),
+    dict(season=9,  year="2022", **_b("vikash-kandola", "Vikash Kandola", "विकाश कंडोला", "haryana-steelers", 90.00)),
+    dict(season=9,  year="2022", **_b("sachin-tanwar", "Sachin Tanwar", "सचिन तंवर", "gujarat-giants", 88.00)),
+    dict(season=9,  year="2022", **_b("surender-gill", "Surender Gill", "सुरेंद्र गिल", "up-yoddhas", 85.00)),
+    dict(season=6,  year="2018", **_b("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "bengaluru-bulls", 83.00)),
+]

@@ -10,7 +10,7 @@ from templates import (esc, slug, icon, role_badge, page, SITE, BRAND, BRAND_EN,
 import content as C
 from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTONES,
                   WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES,
-                  STANDINGS, VENUES)
+                  STANDINGS, VENUES, AUCTIONS, ALL_TIME_EXPENSIVE)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
@@ -1031,6 +1031,134 @@ def build_venue(v):
                         f"{v['name']} {v['name_hi']} {v['city']} {v['city_hi']} stadium venue arena kabaddi".lower()])
 
 
+# ================================================================ AUCTIONS ====
+def fmt_price(lakh):
+    """Hindi price string from a value in lakh. 100 लाख = 1 करोड़।"""
+    if lakh >= 100:
+        s = f"{lakh / 100:.3f}".rstrip("0").rstrip(".")
+        return f"₹{s} करोड़"
+    s = f"{lakh:.2f}".rstrip("0").rstrip(".")
+    return f"₹{s} लाख"
+
+
+def _buy_name_cell(b, depth):
+    """Player name cell — links to profile if it exists, else plain Hindi name."""
+    if b.get("slug") and b["slug"] in PLAYER_BY_ID:
+        return plink(b["slug"], depth)
+    return (f'<span class="font-medium text-kb-ink">{esc(b["name"])}</span>'
+            f'<span class="hi text-kb-text text-xs ml-1">{b["name_hi"]}</span>')
+
+
+def build_auctions_index():
+    depth = 1
+    # all-time most expensive table
+    rows = []
+    for i, b in enumerate(ALL_TIME_EXPENSIVE, 1):
+        rank = (f'<span class="inline-flex items-center justify-center w-6 h-6 rounded-full '
+                f'bg-kb-orange text-white text-xs font-bold tnum">{i}</span>' if i <= 3
+                else f'<span class="tnum text-kb-text">{i}</span>')
+        rows.append([
+            rank,
+            _buy_name_cell(b, depth),
+            team_link(b["team"], depth),
+            f'<b class="text-kb-ink">{fmt_price(b["lakh"])}</b>',
+            f'<a href="../seasons/season-{b["season"]}/" class="hi text-kb-orange hover:underline">सीज़न {b["season"]}</a> '
+            f'<span class="hi text-kb-text text-xs">({b["year"]})</span>',
+        ])
+    expensive_tbl = table(["#", "खिलाड़ी", "टीम", "क़ीमत", "नीलामी"], rows, align_right={3})
+
+    # season links grid
+    cards = ""
+    for n in sorted(AUCTIONS.keys()):
+        a = AUCTIONS[n]
+        top = a["buys"][0]
+        cards += f"""<a href="season-{n}/" class="block bg-kb-card border border-kb-border rounded-xl p-5 hover:border-kb-orange hover:shadow-md transition">
+          <div class="font-heading font-extrabold text-lg text-kb-ink hi leading-tight">सीज़न {n} नीलामी</div>
+          <div class="hi text-sm text-kb-text mt-0.5">वर्ष {a['year']}</div>
+          <div class="hi text-sm text-kb-text mt-2">सबसे महँगा: <b class="text-kb-ink">{esc(top['name_hi'])}</b> — <span class="text-kb-orange font-semibold">{fmt_price(top['lakh'])}</span></div></a>"""
+
+    body = f"""{section_title('पीकेएल नीलामी इतिहास', 'प्रो कबड्डी लीग की खिलाड़ी नीलामी — सबसे महँगे खिलाड़ी, सीज़न-दर-सीज़न टॉप बोलियाँ')}
+      {C.prose([
+        "प्रो कबड्डी लीग की खिलाड़ी नीलामी हर सीज़न से पहले होने वाला सबसे रोमांचक आयोजन है, "
+        "जहाँ फ़्रेंचाइज़ी अपने पर्स (वेतन सीमा) के भीतर रहकर देश-विदेश के सर्वश्रेष्ठ रेडर और "
+        "डिफ़ेंडर ख़रीदती हैं। सीज़न 1 (2014) में जहाँ कीमतें कुछ लाख रुपये में थीं, वहीं अब "
+        "शीर्ष खिलाड़ी करोड़ों में बिकते हैं।",
+        "सीज़न 6 (2018) में मोनू गोयत ₹1.51 करोड़ में बिककर पहले 'करोड़पति' बने, सीज़न 8 में "
+        "प्रदीप नरवाल ₹1.65 करोड़ तक पहुँचे, और सीज़न 9 में पवन सहरावत ₹2.605 करोड़ में बिककर "
+        "पीकेएल इतिहास के सर्वकालिक सबसे महँगे खिलाड़ी बन गए। यहाँ दी गई कीमतें प्रसिद्ध हेडलाइन "
+        "आँकड़ों पर आधारित हैं।",
+      ])}
+      {section_title('सर्वकालिक सबसे महँगे खिलाड़ी', 'पीकेएल नीलामी इतिहास की सबसे बड़ी बोलियाँ')}
+      {expensive_tbl}
+      <div class="mt-8">{section_title('सीज़न-दर-सीज़न नीलामी', 'किसी भी सीज़न की टॉप बोलियाँ देखने के लिए चुनें')}</div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
+    desc = ("प्रो कबड्डी लीग की खिलाड़ी नीलामी का पूरा इतिहास — पवन सहरावत (₹2.605 करोड़), "
+            "प्रदीप नरवाल, मोनू गोयत समेत सर्वकालिक सबसे महँगे खिलाड़ी और हर सीज़न की टॉप बोलियाँ हिंदी में।")
+    write("auctions/index.html", page("पीकेएल नीलामी इतिहास — सबसे महँगे खिलाड़ी | कबड्डी आँकड़े",
+                                       desc, "/auctions/", depth, body, active="auctions",
+                                       trail=[("होम", "../"), ("नीलामी", None)]), "0.8")
+    search_rows.append(["पीकेएल नीलामी", "/auctions/", "पेज",
+                        "auction neelami nilami pkl player price crore lakh kabaddi bid"])
+
+
+def build_auction_season(n):
+    depth = 2
+    a = AUCTIONS[n]
+    s = next((x for x in SEASONS if x["num"] == n), None)
+    rows = []
+    for i, b in enumerate(a["buys"], 1):
+        rows.append([
+            f'<span class="tnum text-kb-text">{i}</span>',
+            _buy_name_cell(b, depth),
+            team_link(b["team"], depth),
+            f'<b class="text-kb-ink">{fmt_price(b["lakh"])}</b>',
+        ])
+    buys_tbl = table(["#", "खिलाड़ी", "टीम", "क़ीमत"], rows, align_right={3})
+    top = a["buys"][0]
+
+    tiles = f"""<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+      {stat('नीलामी वर्ष', a['year'])}
+      {stat('सबसे महँगा', fmt_price(top['lakh']), top['name_hi'])}
+      {stat('दर्ज बोलियाँ', len(a['buys']))}</div>"""
+
+    # prev/next nav across auction seasons
+    keys = sorted(AUCTIONS.keys())
+    idx = keys.index(n)
+    prev_n = keys[idx - 1] if idx > 0 else None
+    next_n = keys[idx + 1] if idx < len(keys) - 1 else None
+    navs = '<div class="flex justify-between mt-8">'
+    navs += (f'<a href="../season-{prev_n}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">← सीज़न {prev_n} नीलामी</a>'
+             if prev_n else '<span></span>')
+    navs += (f'<a href="../season-{next_n}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">सीज़न {next_n} नीलामी →</a>'
+             if next_n else '<span></span>')
+    navs += '</div>'
+
+    champ_line = ""
+    if s:
+        champ_line = (f' इस सीज़न का ख़िताब {TEAMS[s["champion"]]["name_hi"]} ने जीता।')
+
+    body = f"""
+    <div class="bg-kb-card border border-kb-border rounded-2xl p-5 sm:p-6 mb-6" style="border-top:4px solid #FF6B00">
+      <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink leading-tight hi">पीकेएल सीज़न {n} नीलामी</h1>
+      <div class="hi text-sm text-kb-text mt-1">वर्ष {a['year']} · {esc(a['purse_hi'])}</div>
+    </div>
+    {tiles}
+    {C.prose([a['note'] + champ_line])}
+    {section_title('टॉप बोलियाँ', f'सीज़न {n} नीलामी की सबसे बड़ी ख़रीद')}
+    {buys_tbl}
+    <div class="mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी नीलामी</a></div>
+    {navs}
+    """
+    desc = (f"पीकेएल सीज़न {n} ({a['year']}) खिलाड़ी नीलामी — सबसे महँगा {top['name_hi']} "
+            f"({fmt_price(top['lakh'])})। टॉप बोलियाँ, टीम और क़ीमत हिंदी में।")[:300]
+    write(f"auctions/season-{n}/index.html",
+          page(f"पीकेएल सीज़न {n} नीलामी ({a['year']}) — टॉप बोलियाँ | कबड्डी आँकड़े",
+               desc, f"/auctions/season-{n}/", depth, body, active="auctions",
+               trail=[("होम", "../../"), ("नीलामी", "../"), (f"सीज़न {n}", None)]), "0.6")
+    search_rows.append([f"सीज़न {n} नीलामी", f"/auctions/season-{n}/", "नीलामी",
+                        f"auction season {n} neelami pkl {a['year']} top buys price kabaddi".lower()])
+
+
 # ============================================================ THIS DAY ========
 # (month, day, year, title_hi, desc_hi)
 THISDAY = [
@@ -1318,6 +1446,9 @@ def main():
     build_venues_index()
     for v in VENUES:
         build_venue(v)
+    build_auctions_index()
+    for n in sorted(AUCTIONS.keys()):
+        build_auction_season(n)
     build_records()
     build_compare_index()
     for a, b in COMPARE_PAIRS:
