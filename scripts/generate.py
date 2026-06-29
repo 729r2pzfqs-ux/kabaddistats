@@ -9,7 +9,8 @@ from templates import (esc, slug, icon, role_badge, page, SITE, BRAND, BRAND_EN,
                        CONTACT, ROLE, T)
 import content as C
 from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTONES,
-                  WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES)
+                  WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES,
+                  STANDINGS)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
@@ -441,8 +442,9 @@ def build_season(s, prev_s, next_s):
     {perfs}
     {section_title('फ़ाइनल विवरण')}
     {facts}
-    <div class="mt-6">
-      <a href="../../matches/season-{s['num']}/" class="hi inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-kb-orange text-white text-sm font-semibold hover:bg-kb-dark transition">{icon('calendar','w-4 h-4')}सीज़न {s['num']} के सभी मैच परिणाम देखें →</a>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="../../standings/season-{s['num']}/" class="hi inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-kb-orange text-white text-sm font-semibold hover:bg-kb-dark transition">{icon('trophy','w-4 h-4')}सीज़न {s['num']} की अंक तालिका देखें →</a>
+      <a href="../../matches/season-{s['num']}/" class="hi inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-kb-border bg-white text-sm font-semibold hover:border-kb-orange transition">{icon('calendar','w-4 h-4')}सीज़न {s['num']} के सभी मैच परिणाम देखें →</a>
     </div>
     {navs}
     """
@@ -588,6 +590,157 @@ def build_season_matches(s, prev_s, next_s):
                trail=[("होम", "../../"), ("मैच परिणाम", "../"), (f"सीज़न {num}", None)]), "0.7")
     search_rows.append([f"सीज़न {num} मैच परिणाम", f"/matches/season-{num}/", "मैच",
                         f"season {num} {s['year']} matches results parinaam final pkl kabaddi".lower()])
+
+
+# ================================================================ STANDINGS ===
+def _fmt_diff(d):
+    if d > 0:
+        return f'<span class="tnum text-green-600 font-semibold">+{d}</span>'
+    if d < 0:
+        return f'<span class="tnum text-red-600 font-semibold">{d}</span>'
+    return '<span class="tnum text-kb-text">0</span>'
+
+
+def _standings_table(season_num, depth):
+    rows = STANDINGS.get(season_num, [])
+    head = ['#', 'टीम', 'खेले', 'जीते', 'हारे', 'टाई', 'पक्ष में', 'विपक्ष', 'अंतर', 'अंक', 'प्लेऑफ़']
+    align_r = {2, 3, 4, 5, 6, 7, 8, 9}
+    thead = "".join(
+        f'<th class="hi px-3 py-2 text-{("right" if i in align_r else "left")} '
+        f'text-xs font-bold text-kb-text uppercase tracking-wide whitespace-nowrap">{h}</th>'
+        for i, h in enumerate(head))
+    body = ""
+    for pos, r in enumerate(rows, 1):
+        t = TEAMS.get(r["team"], {})
+        label = t.get("name_hi", esc(r["team"]))
+        is_champ = pos == 1
+        is_ru = pos == 2
+        # position badge
+        if is_champ:
+            pos_cell = f'<span class="inline-flex items-center gap-1 text-kb-orange font-bold">{icon("trophy","w-4 h-4")}{pos}</span>'
+        else:
+            pos_cell = f'<span class="font-bold text-kb-ink">{pos}</span>'
+        dot = (f'<span class="inline-block w-2.5 h-2.5 rounded-full align-middle mr-2" '
+               f'style="background:{t.get("color","#999")}"></span>')
+        team_cell = (f'{dot}<a href="{"../"*depth}teams/{r["team"]}/" class="hi font-medium '
+                     f'text-kb-ink hover:text-kb-orange">{esc(label)}</a>')
+        if is_champ:
+            team_cell += ' <span class="hi text-xs text-kb-orange font-semibold">(चैंपियन)</span>'
+        elif is_ru:
+            team_cell += ' <span class="hi text-xs text-kb-text font-semibold">(उपविजेता)</span>'
+        if r["q"]:
+            qual = '<span class="hi inline-block text-xs font-semibold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200 whitespace-nowrap">क्वालिफ़ाई</span>'
+        else:
+            qual = '<span class="hi text-xs text-kb-text">—</span>'
+        cells = [
+            pos_cell, team_cell,
+            f'<span class="tnum">{r["p"]}</span>',
+            f'<span class="tnum font-semibold text-kb-ink">{r["w"]}</span>',
+            f'<span class="tnum">{r["l"]}</span>',
+            f'<span class="tnum">{r["t"]}</span>',
+            f'<span class="tnum">{r["sf"]}</span>',
+            f'<span class="tnum">{r["sa"]}</span>',
+            _fmt_diff(r["diff"]),
+            f'<span class="tnum font-bold text-kb-ink">{r["pts"]}</span>',
+            qual,
+        ]
+        tds = ""
+        for i, c in enumerate(cells):
+            a = "right tnum" if i in align_r else "left"
+            tds += f'<td class="px-3 py-2.5 text-{a} text-sm whitespace-nowrap">{c}</td>'
+        rowcls = "bg-orange-50/60" if r["q"] else ""
+        body += f"<tr class='border-t border-kb-border {rowcls}'>{tds}</tr>"
+    return (f'<div class="overflow-x-auto bg-kb-card border border-kb-border rounded-xl">'
+            f'<table class="w-full min-w-full"><thead class="bg-kb-bg">'
+            f'<tr>{thead}</tr></thead><tbody>{body}</tbody></table></div>')
+
+
+def _standings_legend():
+    return ('<div class="flex flex-wrap items-center gap-x-5 gap-y-1.5 mt-3 text-xs text-kb-text hi">'
+            '<span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded bg-orange-50/60 border border-kb-border"></span>प्लेऑफ़ में क्वालिफ़ाई</span>'
+            '<span>खेले = कुल मैच</span><span>जीते / हारे / टाई</span>'
+            '<span>पक्ष में = कुल अंक बनाए</span><span>विपक्ष = अंक दिए</span>'
+            '<span>अंतर = अंक अंतर</span><span>अंक = लीग अंक (जीत = 5, टाई = 3, बोनस = 1)</span></div>')
+
+
+def build_standings_index():
+    depth = 1
+    cards = ""
+    for s in reversed(SEASONS):
+        rows = STANDINGS.get(s["num"], [])
+        ch = TEAMS[s["champion"]]
+        ru = TEAMS[s["runner_up"]]
+        topper = TEAMS[rows[0]["team"]] if rows else ch
+        cards += f"""<a href="season-{s['num']}/" class="block bg-kb-card border border-kb-border rounded-xl p-5 hover:border-kb-orange hover:shadow-md transition">
+          <div class="flex items-center justify-between">
+            <span class="font-heading font-extrabold text-lg text-kb-ink hi">सीज़न {s['num']}</span>
+            <span class="hi text-sm text-kb-text">{s['year']}</span></div>
+          <div class="hi text-sm text-kb-orange font-semibold mt-1 flex items-center gap-1.5">{icon('trophy','w-4 h-4')}{esc(ch['name_hi'])}</div>
+          <div class="hi text-xs text-kb-text mt-1">उपविजेता: {esc(ru['name_hi'])}</div>
+          <div class="hi text-xs text-kb-text mt-2">{len(rows)} टीमें · पूरी अंक तालिका →</div></a>"""
+
+    body = f"""{section_title('पीकेएल अंक तालिका', 'प्रो कबड्डी लीग के हर सीज़न की पूरी टीम रैंकिंग, जीत-हार और अंक')}
+      {C.prose([
+        "यहाँ प्रो कबड्डी लीग के सभी ग्यारह सीज़नों की विस्तृत अंक तालिका उपलब्ध है। "
+        "हर सीज़न के लिए टीमों की अंतिम रैंकिंग, खेले गए मैच, जीत, हार, टाई, बनाए और दिए गए "
+        "अंक, अंक अंतर तथा कुल लीग अंक दिए गए हैं — साथ ही यह भी कि कौन-सी टीमें प्लेऑफ़ में "
+        "पहुँचीं। पहले चार सीज़नों में आठ-आठ टीमें थीं; सीज़न 5 से लीग में बारह टीमें खेलती हैं।",
+      ])}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
+    desc = ("प्रो कबड्डी लीग के सभी सीज़न (1 से 11) की अंक तालिका — टीम रैंकिंग, जीत-हार, "
+            "अंक अंतर, कुल अंक और प्लेऑफ़ क्वालिफ़िकेशन हिंदी में।")
+    write("standings/index.html", page("पीकेएल अंक तालिका — सभी सीज़न | कबड्डी आँकड़े",
+                                        desc, "/standings/", depth, body, active="standings",
+                                        trail=[("होम", "../"), ("अंक तालिका", None)]), "0.8")
+    search_rows.append(["अंक तालिका", "/standings/", "पेज",
+                        "standings points table ank talika rankings pkl kabaddi"])
+
+
+def build_season_standings(s, prev_s, next_s):
+    depth = 2
+    num = s["num"]
+    rows = STANDINGS.get(num, [])
+    ch, ru = TEAMS[s["champion"]], TEAMS[s["runner_up"]]
+    n_q = sum(1 for r in rows if r["q"])
+
+    intro = C.prose([
+        f"प्रो कबड्डी लीग <b>सीज़न {num}</b> ({s['year']}) की पूरी अंक तालिका। इस सीज़न में "
+        f"<b>{len(rows)}</b> टीमों ने हिस्सा लिया और शीर्ष <b>{n_q}</b> टीमें प्लेऑफ़ में पहुँचीं। "
+        f"ख़िताब <b>{esc(ch['name_hi'])}</b> ने जीता, जिसने फ़ाइनल में {esc(ru['name_hi'])} को "
+        f"{s['score']} से हराया।",
+    ], heading=f"सीज़न {num} अंक तालिका")
+
+    table_html = (_standings_table(num, depth) + _standings_legend()
+                  if rows else '<p class="hi text-kb-text">इस सीज़न की अंक तालिका शीघ्र जोड़ी जाएगी।</p>')
+
+    navs = '<div class="flex justify-between mt-8">'
+    navs += (f'<a href="../season-{prev_s["num"]}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">← सीज़न {prev_s["num"]} अंक तालिका</a>'
+             if prev_s else '<span></span>')
+    navs += (f'<a href="../season-{next_s["num"]}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">सीज़न {next_s["num"]} अंक तालिका →</a>'
+             if next_s else '<span></span>')
+    navs += '</div>'
+
+    body = f"""
+    <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink leading-tight hi mb-1">पीकेएल सीज़न {num} — अंक तालिका</h1>
+    <p class="hi text-kb-text mb-5">{s['year']} · {len(rows)} टीमें · शीर्ष {n_q} प्लेऑफ़ में</p>
+    {intro}
+    {section_title('अंतिम अंक तालिका', 'स्थान, जीत-हार, अंक अंतर और कुल लीग अंक')}
+    {table_html}
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="../../seasons/season-{num}/" class="hi px-4 py-2 rounded-lg bg-kb-orange text-white text-sm font-semibold hover:bg-kb-dark">सीज़न {num} का पूरा ब्योरा →</a>
+      <a href="../../matches/season-{num}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm font-semibold hover:border-kb-orange">सीज़न {num} के मैच परिणाम</a>
+      <a href="../" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm font-semibold hover:border-kb-orange">सभी सीज़न की अंक तालिका</a>
+    </div>
+    {navs}
+    """
+    desc = (f"प्रो कबड्डी लीग सीज़न {num} ({s['year']}) अंक तालिका — सभी {len(rows)} टीमों की रैंकिंग, "
+            f"जीत-हार, अंक अंतर और कुल अंक। {ch['name_hi']} चैंपियन, {ru['name_hi']} उपविजेता।")[:300]
+    write(f"standings/season-{num}/index.html",
+          page(f"पीकेएल सीज़न {num} अंक तालिका ({s['year']}) | कबड्डी आँकड़े",
+               desc, f"/standings/season-{num}/", depth, body, active="standings",
+               trail=[("होम", "../../"), ("अंक तालिका", "../"), (f"सीज़न {num}", None)]), "0.7")
+    search_rows.append([f"सीज़न {num} अंक तालिका", f"/standings/season-{num}/", "अंक तालिका",
+                        f"season {num} {s['year']} standings points table ank talika pkl kabaddi".lower()])
 
 
 # ================================================================ RECORDS =====
@@ -1057,6 +1210,11 @@ def main():
         prev_s = SEASONS[i-1] if i > 0 else None
         next_s = SEASONS[i+1] if i < len(SEASONS)-1 else None
         build_season_matches(s, prev_s, next_s)
+    build_standings_index()
+    for i, s in enumerate(SEASONS):
+        prev_s = SEASONS[i-1] if i > 0 else None
+        next_s = SEASONS[i+1] if i < len(SEASONS)-1 else None
+        build_season_standings(s, prev_s, next_s)
     build_records()
     build_compare_index()
     for a, b in COMPARE_PAIRS:

@@ -184,6 +184,7 @@ def nav(depth, active=""):
         ("टीमें", up + "teams/", "teams"),
         ("सीज़न", up + "seasons/", "seasons"),
         ("मैच", up + "matches/", "matches"),
+        ("अंक तालिका", up + "standings/", "standings"),
         ("रिकॉर्ड", up + "records/", "records"),
         ("तुलना", up + "compare/", "compare"),
         ("आज के दिन", up + "aaj-ke-din/", "thisday"),
@@ -252,7 +253,7 @@ def footer(depth):
       <div class="font-heading font-extrabold text-lg hi mb-2"><span class="text-kb-orange">कबड्डी</span><span class="text-kb-ink"> आँकड़े</span></div>
       <p class="hi text-sm text-kb-text leading-relaxed">हिंदी में कबड्डी सांख्यिकी — प्रो कबड्डी लीग और अंतरराष्ट्रीय कबड्डी के विस्तृत आँकड़े, रिकॉर्ड और खिलाड़ी प्रोफ़ाइल।</p>
     </div>
-    {col("ब्राउज़ करें", [("खिलाड़ी", up+"players/"), ("टीमें", up+"teams/"), ("सीज़न", up+"seasons/"), ("मैच", up+"matches/"), ("रिकॉर्ड", up+"records/")])}
+    {col("ब्राउज़ करें", [("खिलाड़ी", up+"players/"), ("टीमें", up+"teams/"), ("सीज़न", up+"seasons/"), ("मैच", up+"matches/"), ("अंक तालिका", up+"standings/"), ("रिकॉर्ड", up+"records/")])}
     {col("अधिक", [("तुलना", up+"compare/"), ("आज के दिन", up+"aaj-ke-din/"), ("हमारे बारे में", up+"about/"), ("गोपनीयता नीति", up+"privacy/")])}
     {col("संपर्क", [(CONTACT, "mailto:"+CONTACT)])}
   </div>
