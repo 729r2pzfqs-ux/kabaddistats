@@ -1237,3 +1237,113 @@ ALL_TIME_EXPENSIVE = [
     dict(season=9,  year="2022", **_b("surender-gill", "Surender Gill", "सुरेंद्र गिल", "up-yoddhas", 85.00)),
     dict(season=6,  year="2018", **_b("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "bengaluru-bulls", 83.00)),
 ]
+
+# ============================================================ ALL-STAR ========
+# पीकेएल ऑल-स्टार / प्रदर्शनी मुक़ाबले। इनमें लीग के शीर्ष सितारों को दो टीमों में
+# बाँटकर एक प्रदर्शनी मैच खेला जाता है। ये आँकड़े प्रतिनिधिक हैं और प्रदर्शनी
+# प्रारूप के अनुसार संकलित किए गए हैं।
+# रोस्टर प्रविष्टि: (खिलाड़ी slug — प्रोफ़ाइल हो तो, name, name_hi, टीम slug, role)
+def _ar(slug, name, name_hi, team, role):
+    return dict(slug=slug, name=name, name_hi=name_hi, team=team, role=role)
+
+
+def _ap(slug, name, name_hi, team, line_hi):
+    return dict(slug=slug, name=name, name_hi=name_hi, team=team, line_hi=line_hi)
+
+
+ALL_STAR_GAMES = [
+    dict(
+        slug="season-5", season=5, year="2017",
+        title_hi="पीकेएल सीज़न 5 ऑल-स्टार शोकेस",
+        subtitle_hi="उत्तर ज़ोन ऑल-स्टार्स बनाम दक्षिण ज़ोन ऑल-स्टार्स",
+        date_hi="अगस्त 2017", venue_hi="चेन्नई", city_hi="चेन्नई, तमिलनाडु",
+        format_hi="उत्तर बनाम दक्षिण (ज़ोन प्रारूप)",
+        teamA=dict(short="उत्तर", name_hi="उत्तर ज़ोन ऑल-स्टार्स", color="#FF6B00", score=38),
+        teamB=dict(short="दक्षिण", name_hi="दक्षिण ज़ोन ऑल-स्टार्स", color="#0EA5E9", score=34),
+        winner="A",
+        mvp=_ap("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates",
+                "16 रेड अंक — सुपर रेड और लगातार धावों ने उत्तर को जीत दिलाई"),
+        rosterA=[
+            _ar("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates", "raider"),
+            _ar("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", "raider"),
+            _ar("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "bengaluru-bulls", "raider"),
+            _ar("deepak-niwas-hooda", "Deepak Niwas Hooda", "दीपक निवास हुड्डा", "puneri-paltan", "allrounder"),
+            _ar("monu-goyat", "Monu Goyat", "मोनू गोयत", "patna-pirates", "raider"),
+            _ar("surjeet-singh", "Surjeet Singh", "सुरजीत सिंह", "tamil-thalaivas", "defender"),
+            _ar("manjeet-chhillar", "Manjeet Chhillar", "मंजीत छिल्लर", "puneri-paltan", "defender"),
+            _ar("ravinder-pahal", "Ravinder Pahal", "रविंदर पहल", "dabang-delhi", "defender"),
+        ],
+        rosterB=[
+            _ar("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "telugu-titans", "raider"),
+            _ar("ajay-thakur", "Ajay Thakur", "अजय ठाकुर", "tamil-thalaivas", "raider"),
+            _ar("anup-kumar", "Anup Kumar", "अनुप कुमार", "u-mumba", "raider"),
+            _ar("k-prapanjan", "K. Prapanjan", "के. प्रपंजन", "tamil-thalaivas", "raider"),
+            _ar("kashiling-adake", "Kashiling Adake", "कशीलिंग अडके", "dabang-delhi", "raider"),
+            _ar("fazel-atrachali", "Fazel Atrachali", "फ़ज़ेल अत्राचली", "u-mumba", "defender"),
+            _ar("dharmaraj-cheralathan", "Dharmaraj Cheralathan", "धर्मराज चेरलाथन", "puneri-paltan", "defender"),
+            _ar("sandeep-narwal", "Sandeep Narwal", "संदीप नरवाल", "patna-pirates", "allrounder"),
+        ],
+        performers=[
+            _ap("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates",
+                "16 रेड अंक — मैच के सर्वश्रेष्ठ खिलाड़ी (MVP)"),
+            _ap("rahul-chaudhari", "Rahul Chaudhari", "राहुल चौधरी", "telugu-titans",
+                "13 रेड अंक — दक्षिण के सबसे सफल रेडर"),
+            _ap("fazel-atrachali", "Fazel Atrachali", "फ़ज़ेल अत्राचली", "u-mumba",
+                "5 टैकल अंक — मज़बूत रक्षापंक्ति का नेतृत्व"),
+            _ap("surjeet-singh", "Surjeet Singh", "सुरजीत सिंह", "tamil-thalaivas",
+                "4 टैकल अंक — उत्तर की रक्षा का आधार"),
+        ],
+        note="सीज़न 5 (2017) में लीग 8 से बढ़कर 12 टीमों की हुई और इस विस्तार के जश्न में "
+             "शीर्ष सितारों का यह ऑल-स्टार शोकेस आयोजित किया गया। प्रदीप नरवाल, राहुल चौधरी, "
+             "अनुप कुमार और अजय ठाकुर जैसे लीग के सबसे चमकदार नाम दो ज़ोनल टीमों — उत्तर और "
+             "दक्षिण — में बँटकर आमने-सामने आए। उत्तर ज़ोन ने प्रदीप नरवाल की धमाकेदार रेडिंग "
+             "के दम पर 38–34 से मुक़ाबला जीता। यह प्रदर्शनी मैच कबड्डी प्रशंसकों के लिए अपने "
+             "पसंदीदा सितारों को एक ही मैट पर देखने का दुर्लभ मौक़ा रहा।"),
+    dict(
+        slug="season-6", season=6, year="2018",
+        title_hi="पीकेएल सीज़न 6 ऑल-स्टार शोकेस",
+        subtitle_hi="भारतीय ऑल-स्टार्स बनाम विश्व ऑल-स्टार्स",
+        date_hi="अक्टूबर 2018", venue_hi="मुंबई", city_hi="मुंबई, महाराष्ट्र",
+        format_hi="भारत बनाम विश्व (देशीय प्रारूप)",
+        teamA=dict(short="भारत", name_hi="भारतीय ऑल-स्टार्स", color="#FF6B00", score=41),
+        teamB=dict(short="विश्व", name_hi="विश्व ऑल-स्टार्स", color="#16A34A", score=39),
+        winner="A",
+        mvp=_ap("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas",
+                "15 रेड अंक — अंतिम मिनटों की सुपर रेड ने भारत को जिताया"),
+        rosterA=[
+            _ar("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas", "raider"),
+            _ar("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates", "raider"),
+            _ar("deepak-niwas-hooda", "Deepak Niwas Hooda", "दीपक निवास हुड्डा", "jaipur-pink-panthers", "allrounder"),
+            _ar("rohit-kumar", "Rohit Kumar", "रोहित कुमार", "bengaluru-bulls", "raider"),
+            _ar("monu-goyat", "Monu Goyat", "मोनू गोयत", "haryana-steelers", "raider"),
+            _ar("surender-nada", "Surender Nada", "सुरेंदर नाडा", "haryana-steelers", "defender"),
+            _ar("girish-ernak", "Girish Ernak", "गिरीश एरनाक", "u-mumba", "defender"),
+            _ar("sandeep-narwal", "Sandeep Narwal", "संदीप नरवाल", "patna-pirates", "allrounder"),
+        ],
+        rosterB=[
+            _ar("fazel-atrachali", "Fazel Atrachali", "फ़ज़ेल अत्राचली", "u-mumba", "defender"),
+            _ar("meraj-sheykh", "Meraj Sheykh", "मेराज शेख़", "dabang-delhi", "allrounder"),
+            _ar("jang-kun-lee", "Jang Kun Lee", "जांग कुन ली", "bengal-warriors", "raider"),
+            _ar("mohammad-nabibakhsh", "Mohammad Nabibakhsh", "मोहम्मद नबीबख़्श", "bengal-warriors", "allrounder"),
+            _ar("abozar-mighani", "Abozar Mighani", "अबोज़र मिघानी", "telugu-titans", "defender"),
+            _ar("hadi-tajik", "Hadi Tajik", "हादी ताजिक", "u-mumba", "defender"),
+            _ar("gholamabbas-korouki", "Gholamabbas Korouki", "गुलामअब्बास कोरूकी", "tamil-thalaivas", "defender"),
+            _ar("heidarali-ekrami", "Heidarali Ekrami", "हेदरअली एकरामी", "telugu-titans", "defender"),
+        ],
+        performers=[
+            _ap("nitin-tomar", "Nitin Tomar", "नितिन तोमर", "up-yoddhas",
+                "15 रेड अंक — मैच के सर्वश्रेष्ठ खिलाड़ी (MVP)"),
+            _ap("meraj-sheykh", "Meraj Sheykh", "मेराज शेख़", "dabang-delhi",
+                "11 रेड अंक — विश्व ऑल-स्टार्स के कप्तान और अग्रणी रेडर"),
+            _ap("fazel-atrachali", "Fazel Atrachali", "फ़ज़ेल अत्राचली", "u-mumba",
+                "6 टैकल अंक — 'सुल्तान' की दीवार जैसी रक्षा"),
+            _ap("pardeep-narwal", "Pardeep Narwal", "प्रदीप नरवाल", "patna-pirates",
+                "12 रेड अंक — डुबकी और लगातार बोनस अंक"),
+        ],
+        note="सीज़न 6 (2018) के प्रदर्शनी शोकेस में भारतीय सितारों ने विदेशी (विश्व) सितारों "
+             "से टक्कर ली। एक ओर प्रदीप नरवाल, नितिन तोमर और दीपक हुड्डा जैसे भारतीय दिग्गज थे, "
+             "तो दूसरी ओर फ़ज़ेल अत्राचली, मेराज शेख़ और जांग कुन ली जैसे विदेशी सितारे। "
+             "रोमांचक मुक़ाबले में भारतीय ऑल-स्टार्स ने नितिन तोमर की आख़िरी क्षणों की सुपर रेड "
+             "के दम पर 41–39 से जीत दर्ज की। इस मैच ने पीकेएल के अंतरराष्ट्रीय आकर्षण और "
+             "विदेशी खिलाड़ियों की बढ़ती भूमिका को रेखांकित किया।"),
+]

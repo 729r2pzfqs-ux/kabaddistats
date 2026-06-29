@@ -10,7 +10,7 @@ from templates import (esc, slug, icon, role_badge, page, SITE, BRAND, BRAND_EN,
 import content as C
 from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTONES,
                   WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES,
-                  STANDINGS, VENUES, AUCTIONS, ALL_TIME_EXPENSIVE)
+                  STANDINGS, VENUES, AUCTIONS, ALL_TIME_EXPENSIVE, ALL_STAR_GAMES)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
@@ -1328,6 +1328,155 @@ def build_auction_season(n):
                         f"auction season {n} neelami pkl {a['year']} top buys price kabaddi".lower()])
 
 
+# ============================================================ ALL-STAR =======
+def _as_name_cell(o, depth):
+    """Player name cell — links to profile if it exists, else plain Hindi name."""
+    if o.get("slug") and o["slug"] in PLAYER_BY_ID:
+        return plink(o["slug"], depth)
+    return (f'<span class="font-medium text-kb-ink">{esc(o["name"])}</span>'
+            f'<span class="hi text-kb-text text-xs ml-1">{o["name_hi"]}</span>')
+
+
+def _as_roster_table(roster, depth):
+    rows = []
+    for pl in roster:
+        rows.append([
+            _as_name_cell(pl, depth),
+            team_link(pl["team"], depth),
+            f'<span class="hi inline-flex px-2 py-0.5 rounded-md bg-kb-bg border border-kb-border text-xs text-kb-text">{role_pill_label(pl["role"])}</span>',
+        ])
+    return table(["खिलाड़ी", "मूल टीम", "भूमिका"], rows)
+
+
+def _as_scoreline(g, depth, big=False):
+    a, b = g["teamA"], g["teamB"]
+    wa = "ring-2 ring-kb-orange" if g["winner"] == "A" else ""
+    wb = "ring-2 ring-kb-orange" if g["winner"] == "B" else ""
+    sz = "text-4xl sm:text-5xl" if big else "text-3xl"
+    return f"""<div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 bg-kb-card border border-kb-border rounded-2xl p-5 sm:p-6 mb-6">
+      <div class="text-center rounded-xl p-3 {wa}" style="background:{a['color']}10">
+        <div class="hi font-heading font-extrabold text-base sm:text-lg text-kb-ink leading-tight">{esc(a['name_hi'])}</div>
+        <div class="font-heading font-extrabold tnum {sz} text-kb-ink mt-1">{a['score']}</div>
+      </div>
+      <div class="hi text-kb-text font-bold text-sm">बनाम</div>
+      <div class="text-center rounded-xl p-3 {wb}" style="background:{b['color']}10">
+        <div class="hi font-heading font-extrabold text-base sm:text-lg text-kb-ink leading-tight">{esc(b['name_hi'])}</div>
+        <div class="font-heading font-extrabold tnum {sz} text-kb-ink mt-1">{b['score']}</div>
+      </div>
+    </div>"""
+
+
+def build_allstar_index():
+    depth = 1
+    cards = ""
+    for g in ALL_STAR_GAMES:
+        win = g["teamA"] if g["winner"] == "A" else g["teamB"]
+        cards += f"""<a href="{g['slug']}/" class="block bg-kb-card border border-kb-border rounded-xl p-5 hover:border-kb-orange hover:shadow-md transition">
+          <div class="hi text-xs font-semibold text-kb-orange uppercase tracking-wide">सीज़न {g['season']} · {g['year']}</div>
+          <div class="font-heading font-extrabold text-lg text-kb-ink hi leading-tight mt-1">{esc(g['title_hi'])}</div>
+          <div class="hi text-sm text-kb-text mt-1">{esc(g['subtitle_hi'])}</div>
+          <div class="hi text-sm mt-2 text-kb-ink">परिणाम: <b>{esc(win['name_hi'])}</b> · {g['teamA']['score']}–{g['teamB']['score']}</div>
+          <div class="hi text-xs text-kb-text mt-1">MVP: {esc(g['mvp']['name_hi'])} · {esc(g['venue_hi'])}</div></a>"""
+    body = f"""{section_title('पीकेएल ऑल-स्टार मुक़ाबले', 'प्रो कबड्डी लीग के शीर्ष सितारों के प्रदर्शनी ऑल-स्टार शोकेस — परिणाम, रोस्टर और सर्वश्रेष्ठ खिलाड़ी')}
+      {C.prose([
+        "प्रो कबड्डी लीग में समय-समय पर ऑल-स्टार और प्रदर्शनी मुक़ाबले आयोजित किए गए, जिनमें "
+        "लीग के सबसे चमकदार सितारों को दो टीमों में बाँटकर एक रोमांचक शोकेस मैच खिलाया गया। "
+        "ये मुक़ाबले प्रशंसकों के लिए अपने पसंदीदा रेडरों और डिफेंडरों को एक ही मैट पर, सामान्य "
+        "टीम-प्रतिद्वंद्विता से परे, साथ खेलते देखने का अनोखा मौक़ा रहे। यहाँ पीकेएल के ऑल-स्टार "
+        "शोकेस का इतिहास है — कब हुए, किसने जीते, किन सितारों ने हिस्सा लिया और कौन सर्वश्रेष्ठ रहा।",
+      ])}
+      <div class="grid sm:grid-cols-2 gap-3">{cards}</div>"""
+    desc = ("पीकेएल ऑल-स्टार और प्रदर्शनी मुक़ाबलों का इतिहास — सीज़न 5 और सीज़न 6 शोकेस के "
+            "परिणाम, टीम रोस्टर, MVP और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")
+    write("all-star/index.html", page("पीकेएल ऑल-स्टार मुक़ाबले — इतिहास, रोस्टर व MVP | कबड्डी आँकड़े",
+                                       desc, "/all-star/", depth, body, active="allstar",
+                                       trail=[("होम", "../"), ("ऑल-स्टार", None)]), "0.8")
+    search_rows.append(["ऑल-स्टार मुक़ाबले", "/all-star/", "पेज",
+                        "all star game exhibition pkl kabaddi showcase roster mvp"])
+
+
+def build_allstar_game(g):
+    depth = 2
+    win = g["teamA"] if g["winner"] == "A" else g["teamB"]
+    s = next((x for x in SEASONS if x["num"] == g["season"]), None)
+
+    tiles = f"""<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      {stat('सीज़न', f"सीज़न {g['season']}", g['year'])}
+      {stat('विजेता', win['short'], win['name_hi'])}
+      {stat('MVP', '', g['mvp']['name_hi'])}
+      {stat('स्थान', '', g['venue_hi'])}</div>"""
+
+    # MVP highlight
+    mvp_card = f"""<div class="bg-kb-card border border-kb-border rounded-2xl p-5 mb-6" style="border-left:4px solid #FF6B00">
+      <div class="hi text-xs font-semibold text-kb-orange uppercase tracking-wide">मैच का सर्वश्रेष्ठ खिलाड़ी (MVP)</div>
+      <div class="mt-1 text-lg">{_as_name_cell(g['mvp'], depth)}</div>
+      <div class="hi text-sm text-kb-text mt-1">{esc(g['mvp']['line_hi'])}</div></div>"""
+
+    # standout performers table
+    prows = []
+    for p in g["performers"]:
+        prows.append([_as_name_cell(p, depth), team_link(p["team"], depth),
+                      f'<span class="hi">{esc(p["line_hi"])}</span>'])
+    perf_tbl = table(["खिलाड़ी", "मूल टीम", "प्रदर्शन"], prows)
+
+    # facts
+    facts = table(['विवरण', 'जानकारी'], [
+        ['<span class="hi">आयोजन</span>', f'<span class="hi">{esc(g["title_hi"])}</span>'],
+        ['<span class="hi">प्रारूप</span>', f'<span class="hi">{esc(g["format_hi"])}</span>'],
+        ['<span class="hi">तिथि</span>', f'<span class="hi">{esc(g["date_hi"])}</span>'],
+        ['<span class="hi">स्थान</span>', f'<span class="hi">{esc(g["city_hi"])}</span>'],
+        ['<span class="hi">परिणाम</span>', f'<span class="hi">{esc(win["name_hi"])} विजयी ({g["teamA"]["score"]}–{g["teamB"]["score"]})</span>'],
+    ])
+
+    # prev/next across all-star games
+    idx = ALL_STAR_GAMES.index(g)
+    prev_g = ALL_STAR_GAMES[idx - 1] if idx > 0 else None
+    next_g = ALL_STAR_GAMES[idx + 1] if idx < len(ALL_STAR_GAMES) - 1 else None
+    navs = '<div class="flex justify-between mt-8">'
+    navs += (f'<a href="../{prev_g["slug"]}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">← सीज़न {prev_g["season"]} ऑल-स्टार</a>'
+             if prev_g else '<span></span>')
+    navs += (f'<a href="../{next_g["slug"]}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">सीज़न {next_g["season"]} ऑल-स्टार →</a>'
+             if next_g else '<span></span>')
+    navs += '</div>'
+
+    season_link = (f'<a href="../../seasons/season-{g["season"]}/" class="hi text-kb-orange font-semibold hover:underline">सीज़न {g["season"]} का पूरा ब्योरा →</a>'
+                   if s else "")
+
+    body = f"""
+    <div class="bg-kb-card border border-kb-border rounded-2xl p-5 sm:p-6 mb-6" style="border-top:4px solid #FF6B00">
+      <div class="hi text-xs font-semibold text-kb-orange uppercase tracking-wide">सीज़न {g['season']} · {g['year']}</div>
+      <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink leading-tight hi mt-1">{esc(g['title_hi'])}</h1>
+      <div class="hi text-sm text-kb-text mt-1">{esc(g['subtitle_hi'])} · {esc(g['venue_hi'])}</div>
+    </div>
+    {_as_scoreline(g, depth, big=True)}
+    {tiles}
+    {C.prose([g['note']])}
+    {mvp_card}
+    {section_title(g['teamA']['name_hi'], 'टीम रोस्टर')}
+    {_as_roster_table(g['rosterA'], depth)}
+    <div class="mb-6"></div>
+    {section_title(g['teamB']['name_hi'], 'टीम रोस्टर')}
+    {_as_roster_table(g['rosterB'], depth)}
+    <div class="mb-6"></div>
+    {section_title('सर्वश्रेष्ठ प्रदर्शन', 'मुक़ाबले के स्टैंडआउट खिलाड़ी')}
+    {perf_tbl}
+    <div class="mb-6"></div>
+    {section_title('मैच विवरण')}
+    {facts}
+    <div class="mt-4">{season_link}</div>
+    <div class="mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी ऑल-स्टार मुक़ाबले</a></div>
+    {navs}
+    """
+    desc = (f"{g['title_hi']} ({g['year']}) — {g['subtitle_hi']}। {win['name_hi']} विजयी "
+            f"{g['teamA']['score']}–{g['teamB']['score']}, MVP {g['mvp']['name_hi']}। टीम रोस्टर और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")[:300]
+    write(f"all-star/{g['slug']}/index.html",
+          page(f"{g['title_hi']} ({g['year']}) — रोस्टर व परिणाम | कबड्डी आँकड़े",
+               desc, f"/all-star/{g['slug']}/", depth, body, active="allstar",
+               trail=[("होम", "../../"), ("ऑल-स्टार", "../"), (f"सीज़न {g['season']}", None)]), "0.7")
+    search_rows.append([g['title_hi'], f"/all-star/{g['slug']}/", "ऑल-स्टार",
+                        f"all star season {g['season']} {g['year']} pkl exhibition showcase roster mvp kabaddi".lower()])
+
+
 # ============================================================ THIS DAY ========
 # (month, day, year, title_hi, desc_hi)
 THISDAY = [
@@ -1618,6 +1767,9 @@ def main():
     build_auctions_index()
     for n in sorted(AUCTIONS.keys()):
         build_auction_season(n)
+    build_allstar_index()
+    for g in ALL_STAR_GAMES:
+        build_allstar_game(g)
     build_records()
     build_compare_index()
     for a, b in COMPARE_PAIRS:
