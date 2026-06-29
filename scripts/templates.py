@@ -114,12 +114,12 @@ def head(title, desc, canonical, depth, jsonld=None, og_type="website"):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Google Analytics (GA4) — measurement ID to be added -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B3MY8Q8ST7"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){{dataLayer.push(arguments);}}
 gtag('js', new Date());
-gtag('config', 'G-XXXXXXXXXX');
+gtag('config', 'G-B3MY8Q8ST7');
 </script>
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
