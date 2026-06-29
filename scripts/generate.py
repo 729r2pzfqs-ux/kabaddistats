@@ -9,7 +9,7 @@ from templates import (esc, slug, icon, role_badge, page, SITE, BRAND, BRAND_EN,
                        CONTACT, ROLE, T)
 import content as C
 from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTONES,
-                  WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY)
+                  WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
@@ -441,6 +441,9 @@ def build_season(s, prev_s, next_s):
     {perfs}
     {section_title('फ़ाइनल विवरण')}
     {facts}
+    <div class="mt-6">
+      <a href="../../matches/season-{s['num']}/" class="hi inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-kb-orange text-white text-sm font-semibold hover:bg-kb-dark transition">{icon('calendar','w-4 h-4')}सीज़न {s['num']} के सभी मैच परिणाम देखें →</a>
+    </div>
     {navs}
     """
     desc = (f"प्रो कबड्डी लीग सीज़न {s['num']} ({s['year']}) — {ch['name_hi']} चैंपियन, फ़ाइनल में "
@@ -451,6 +454,140 @@ def build_season(s, prev_s, next_s):
                trail=[("होम", "../../"), ("सीज़न", "../"), (f"सीज़न {s['num']}", None)]), "0.7")
     search_rows.append([f"पीकेएल सीज़न {s['num']}", f"/seasons/season-{s['num']}/", "सीज़न",
                         f"season {s['num']} {s['year']} {ch['name']} champion pkl kabaddi".lower()])
+
+
+# ================================================================ MATCHES =====
+_HI_MONTHS = ["", "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई",
+              "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"]
+
+
+def fmt_date_hi(iso):
+    y, mo, da = iso.split("-")
+    return f"{int(da)} {_HI_MONTHS[int(mo)]} {y}"
+
+
+def _match_teams_cell(m, depth):
+    """team a vs team b, winner side in bold orange."""
+    a_win = m["sa"] > m["sb"]
+    b_win = m["sb"] > m["sa"]
+
+    def side(slug, win):
+        t = TEAMS.get(slug)
+        label = t["name_hi"] if t else esc(slug)
+        cls = "text-kb-orange font-bold" if win else "text-kb-ink"
+        return (f'<a href="{"../"*depth}teams/{slug}/" class="hi {cls} hover:underline">{esc(label)}</a>')
+    return (f'{side(m["a"], a_win)} <span class="text-kb-text text-xs">बनाम</span> '
+            f'{side(m["b"], b_win)}')
+
+
+def _stage_pill(stage):
+    is_final = "फ़ाइनल" in stage and "सेमी" not in stage
+    is_knockout = is_final or "सेमी" in stage or "एलिमिनेटर" in stage
+    cls = ("bg-kb-orange text-white" if is_final
+           else "bg-orange-50 text-orange-700 border border-orange-200" if is_knockout
+           else "bg-kb-bg text-kb-text border border-kb-border")
+    return f'<span class="hi inline-block text-xs font-semibold px-2 py-0.5 rounded {cls} whitespace-nowrap">{esc(stage)}</span>'
+
+
+def _match_rows(matches, depth):
+    rows = []
+    for m in matches:
+        score = f'{m["sa"]}–{m["sb"]}'
+        rows.append([
+            _stage_pill(m["stage"]),
+            f'<span class="hi text-kb-text whitespace-nowrap">{fmt_date_hi(m["date"])}</span>',
+            _match_teams_cell(m, depth),
+            f'<span class="tnum font-semibold text-kb-ink">{score}</span>',
+            f'<span class="hi text-xs text-kb-text">{esc(m["venue"])}</span>',
+        ])
+    return rows
+
+
+def build_matches_index():
+    depth = 1
+    cards = ""
+    for s in reversed(SEASONS):
+        ms = MATCHES.get(s["num"], [])
+        final = next((m for m in ms if "फ़ाइनल" in m["stage"] and "सेमी" not in m["stage"]), None)
+        ch = TEAMS[s["champion"]]
+        fin_txt = ""
+        if final:
+            ru = TEAMS[s["runner_up"]]
+            fin_txt = (f'<div class="hi text-sm text-kb-text mt-2">फ़ाइनल: '
+                       f'<b class="text-kb-ink">{esc(ch["name_hi"])}</b> '
+                       f'<span class="tnum">{final["sa"]}–{final["sb"]}</span> '
+                       f'{esc(ru["name_hi"])}</div>')
+        cards += f"""<a href="season-{s['num']}/" class="block bg-kb-card border border-kb-border rounded-xl p-5 hover:border-kb-orange hover:shadow-md transition">
+          <div class="flex items-center justify-between">
+            <span class="font-heading font-extrabold text-lg text-kb-ink hi">सीज़न {s['num']}</span>
+            <span class="hi text-sm text-kb-text">{s['year']}</span></div>
+          <div class="hi text-sm text-kb-orange font-semibold mt-1 flex items-center gap-1.5">{icon('trophy','w-4 h-4')}{esc(ch['name_hi'])}</div>
+          {fin_txt}
+          <div class="hi text-xs text-kb-text mt-2">{len(ms)} प्रमुख मैच →</div></a>"""
+
+    total_matches = sum(len(v) for v in MATCHES.values())
+    body = f"""{section_title('पीकेएल मैच परिणाम', 'प्रो कबड्डी लीग के हर सीज़न के प्रमुख मुक़ाबले — उद्घाटन मैच, प्लेऑफ़ और फ़ाइनल')}
+      {C.prose([
+        "यहाँ प्रो कबड्डी लीग के सभी ग्यारह सीज़नों के चुनिंदा मैच परिणाम एक जगह उपलब्ध हैं। "
+        "हर सीज़न के लिए उद्घाटन मैच, कुछ प्रमुख लीग-चरण मुक़ाबले और पूरा प्लेऑफ़ क्रम "
+        "(एलिमिनेटर, सेमीफ़ाइनल और फ़ाइनल) दिया गया है — तारीख़, टीमें, स्कोर और स्थल के साथ।",
+      ])}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
+    desc = ("प्रो कबड्डी लीग के सभी सीज़न (1 से 11) के मैच परिणाम — उद्घाटन मैच, सेमीफ़ाइनल, "
+            "फ़ाइनल और प्रमुख लीग मुक़ाबलों के स्कोर, तारीख़ और स्थल हिंदी में।")
+    write("matches/index.html", page("पीकेएल मैच परिणाम — सभी सीज़न | कबड्डी आँकड़े",
+                                      desc, "/matches/", depth, body, active="matches",
+                                      trail=[("होम", "../"), ("मैच परिणाम", None)]), "0.8")
+    search_rows.append(["मैच परिणाम", "/matches/", "पेज",
+                        "matches match results parinaam pkl kabaddi final semifinal"])
+
+
+def build_season_matches(s, prev_s, next_s):
+    depth = 2
+    num = s["num"]
+    matches = MATCHES.get(num, [])
+    ch, ru = TEAMS[s["champion"]], TEAMS[s["runner_up"]]
+    rows = _match_rows(matches, depth)
+
+    intro = C.prose([
+        f"प्रो कबड्डी लीग <b>सीज़न {num}</b> ({s['year']}) के प्रमुख मैच परिणाम — "
+        f"उद्घाटन मुक़ाबले से लेकर फ़ाइनल तक। इस सीज़न का ख़िताब "
+        f"<b>{esc(ch['name_hi'])}</b> ने जीता, जिसने फ़ाइनल में {esc(ru['name_hi'])} को "
+        f"{s['score']} से हराया।",
+    ], heading=f"सीज़न {num} मैच परिणाम")
+
+    table_html = (table(['चरण', 'तारीख़', 'मुक़ाबला', 'स्कोर', 'स्थल'], rows, align_right={3})
+                  if rows else '<p class="hi text-kb-text">इस सीज़न के मैच डेटा शीघ्र जोड़े जाएँगे।</p>')
+
+    # prev/next nav across seasons' match pages
+    navs = '<div class="flex justify-between mt-8">'
+    navs += (f'<a href="../season-{prev_s["num"]}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">← सीज़न {prev_s["num"]} के मैच</a>'
+             if prev_s else '<span></span>')
+    navs += (f'<a href="../season-{next_s["num"]}/" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm hover:border-kb-orange">सीज़न {next_s["num"]} के मैच →</a>'
+             if next_s else '<span></span>')
+    navs += '</div>'
+
+    body = f"""
+    <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink leading-tight hi mb-1">पीकेएल सीज़न {num} — मैच परिणाम</h1>
+    <p class="hi text-kb-text mb-5">{s['year']} · {len(matches)} प्रमुख मुक़ाबले</p>
+    {intro}
+    {section_title('मैच परिणाम', 'चरण, तारीख़, टीमें, स्कोर और स्थल')}
+    {table_html}
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="../../seasons/season-{num}/" class="hi px-4 py-2 rounded-lg bg-kb-orange text-white text-sm font-semibold hover:bg-kb-dark">सीज़न {num} का पूरा ब्योरा →</a>
+      <a href="../" class="hi px-4 py-2 rounded-lg border border-kb-border bg-white text-sm font-semibold hover:border-kb-orange">सभी सीज़न के मैच</a>
+    </div>
+    {navs}
+    """
+    desc = (f"प्रो कबड्डी लीग सीज़न {num} ({s['year']}) के मैच परिणाम — उद्घाटन मैच, सेमीफ़ाइनल और "
+            f"फ़ाइनल के स्कोर, तारीख़ और स्थल। {ch['name_hi']} ने {ru['name_hi']} को फ़ाइनल में "
+            f"{s['score']} से हराया।")[:300]
+    write(f"matches/season-{num}/index.html",
+          page(f"पीकेएल सीज़न {num} मैच परिणाम ({s['year']}) | कबड्डी आँकड़े",
+               desc, f"/matches/season-{num}/", depth, body, active="matches",
+               trail=[("होम", "../../"), ("मैच परिणाम", "../"), (f"सीज़न {num}", None)]), "0.7")
+    search_rows.append([f"सीज़न {num} मैच परिणाम", f"/matches/season-{num}/", "मैच",
+                        f"season {num} {s['year']} matches results parinaam final pkl kabaddi".lower()])
 
 
 # ================================================================ RECORDS =====
@@ -915,6 +1052,11 @@ def main():
         prev_s = SEASONS[i-1] if i > 0 else None
         next_s = SEASONS[i+1] if i < len(SEASONS)-1 else None
         build_season(s, prev_s, next_s)
+    build_matches_index()
+    for i, s in enumerate(SEASONS):
+        prev_s = SEASONS[i-1] if i > 0 else None
+        next_s = SEASONS[i+1] if i < len(SEASONS)-1 else None
+        build_season_matches(s, prev_s, next_s)
     build_records()
     build_compare_index()
     for a, b in COMPARE_PAIRS:

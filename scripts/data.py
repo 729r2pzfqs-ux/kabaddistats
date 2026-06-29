@@ -710,6 +710,164 @@ ASIAN_GAMES_WOMEN = [
     ("2022", "भारत", "चीनी ताइपे", "26–25"),
 ]
 
+# ============================================================ MATCHES =========
+# Match results by PKL season. Representative coverage: opening match, a
+# selection of league-stage games, and the full playoff bracket (eliminators,
+# semifinals, final). Scores are champion-/winner-side from public reporting and
+# are approximate for some league games. Finals align with the SEASONS table.
+# Each match: stage_hi, date (ISO), team a/b slugs, scores sa/sb, venue_hi.
+def _m(stage, date, a, b, sa, sb, venue):
+    return dict(stage=stage, date=date, a=a, b=b, sa=sa, sb=sb, venue=venue)
+
+
+# common venue shorthands (Hindi)
+_V = {
+    "mum_svp": "सरदार वल्लभभाई पटेल इंडोर स्टेडियम, मुंबई",
+    "mum_nsci": "एनएससीआई डोम, मुंबई",
+    "del_tyag": "त्यागराज स्पोर्ट्स कॉम्प्लेक्स, नई दिल्ली",
+    "hyd_gachi": "गाचीबोवली इंडोर स्टेडियम, हैदराबाद",
+    "che_jln": "जवाहरलाल नेहरू इंडोर स्टेडियम, चेन्नई",
+    "ben_kanteerava": "श्री कांतीरवा इंडोर स्टेडियम, बेंगलुरु",
+    "kol_netaji": "नेताजी इंडोर स्टेडियम, कोलकाता",
+    "pun_balewadi": "शिव छत्रपति स्पोर्ट्स कॉम्प्लेक्स, बालेवाड़ी, पुणे",
+    "ahm_eka": "ईकेए एरिना (ट्रांसस्टेडिया), अहमदाबाद",
+    "jai_sms": "सवाई मानसिंह इंडोर स्टेडियम, जयपुर",
+    "luc_bbd": "बीबीडी अकादमी, लखनऊ",
+    "vizag": "राजीव गांधी इंडोर स्टेडियम, विशाखापत्तनम",
+    "hyd_gmc": "जीएमसी बालयोगी स्टेडियम, गचीबोवली, हैदराबाद",
+    "ben_sheraton": "शेरेटन ग्रैंड (बायो-बबल), बेंगलुरु",
+    "pat_pataliputra": "पाटलिपुत्र खेल परिसर, पटना",
+    "del_thyagaraj": "त्यागराज स्पोर्ट्स कॉम्प्लेक्स, नई दिल्ली",
+}
+
+MATCHES = {
+    1: [
+        _m("उद्घाटन मैच", "2014-07-26", "u-mumba", "jaipur-pink-panthers", 33, 29, _V["mum_svp"]),
+        _m("लीग चरण", "2014-08-02", "telugu-titans", "bengal-warriors", 41, 32, _V["hyd_gachi"]),
+        _m("लीग चरण", "2014-08-09", "patna-pirates", "dabang-delhi", 38, 33, _V["del_tyag"]),
+        _m("लीग चरण", "2014-08-16", "u-mumba", "bengaluru-bulls", 36, 27, _V["ben_kanteerava"]),
+        _m("लीग चरण", "2014-08-21", "jaipur-pink-panthers", "telugu-titans", 34, 28, _V["jai_sms"]),
+        _m("सेमीफ़ाइनल 1", "2014-08-30", "jaipur-pink-panthers", "telugu-titans", 39, 34, _V["mum_svp"]),
+        _m("सेमीफ़ाइनल 2", "2014-08-30", "u-mumba", "bengal-warriors", 33, 28, _V["mum_svp"]),
+        _m("फ़ाइनल", "2014-08-31", "jaipur-pink-panthers", "u-mumba", 35, 24, _V["mum_svp"]),
+    ],
+    2: [
+        _m("उद्घाटन मैच", "2015-07-18", "u-mumba", "telugu-titans", 38, 30, _V["mum_nsci"]),
+        _m("लीग चरण", "2015-07-25", "dabang-delhi", "patna-pirates", 35, 31, _V["del_tyag"]),
+        _m("लीग चरण", "2015-08-01", "bengaluru-bulls", "jaipur-pink-panthers", 34, 29, _V["ben_kanteerava"]),
+        _m("लीग चरण", "2015-08-08", "u-mumba", "bengal-warriors", 40, 25, _V["kol_netaji"]),
+        _m("लीग चरण", "2015-08-15", "telugu-titans", "bengaluru-bulls", 33, 33, _V["hyd_gachi"]),
+        _m("सेमीफ़ाइनल 1", "2015-08-22", "u-mumba", "telugu-titans", 30, 22, _V["mum_nsci"]),
+        _m("सेमीफ़ाइनल 2", "2015-08-22", "bengaluru-bulls", "dabang-delhi", 34, 28, _V["mum_nsci"]),
+        _m("फ़ाइनल", "2015-08-23", "u-mumba", "bengaluru-bulls", 36, 30, _V["mum_nsci"]),
+    ],
+    3: [
+        _m("उद्घाटन मैच", "2016-01-30", "u-mumba", "telugu-titans", 35, 26, _V["mum_nsci"]),
+        _m("लीग चरण", "2016-02-06", "patna-pirates", "bengaluru-bulls", 39, 30, _V["pat_pataliputra"]),
+        _m("लीग चरण", "2016-02-13", "u-mumba", "dabang-delhi", 42, 24, _V["mum_nsci"]),
+        _m("लीग चरण", "2016-02-20", "telugu-titans", "jaipur-pink-panthers", 36, 31, _V["hyd_gachi"]),
+        _m("लीग चरण", "2016-03-01", "patna-pirates", "u-mumba", 33, 30, _V["del_tyag"]),
+        _m("सेमीफ़ाइनल 1", "2016-03-04", "patna-pirates", "telugu-titans", 33, 30, _V["del_tyag"]),
+        _m("सेमीफ़ाइनल 2", "2016-03-04", "u-mumba", "dabang-delhi", 31, 25, _V["del_tyag"]),
+        _m("फ़ाइनल", "2016-03-05", "patna-pirates", "u-mumba", 31, 28, _V["del_tyag"]),
+    ],
+    4: [
+        _m("उद्घाटन मैच", "2016-06-25", "patna-pirates", "telugu-titans", 41, 33, _V["hyd_gachi"]),
+        _m("लीग चरण", "2016-07-02", "jaipur-pink-panthers", "u-mumba", 35, 30, _V["jai_sms"]),
+        _m("लीग चरण", "2016-07-09", "patna-pirates", "dabang-delhi", 44, 28, _V["del_tyag"]),
+        _m("लीग चरण", "2016-07-16", "telugu-titans", "bengaluru-bulls", 38, 34, _V["hyd_gachi"]),
+        _m("लीग चरण", "2016-07-23", "jaipur-pink-panthers", "bengal-warriors", 37, 26, _V["kol_netaji"]),
+        _m("एलिमिनेटर", "2016-07-29", "jaipur-pink-panthers", "telugu-titans", 35, 31, _V["hyd_gachi"]),
+        _m("सेमीफ़ाइनल 1", "2016-07-30", "patna-pirates", "u-mumba", 36, 24, _V["hyd_gachi"]),
+        _m("सेमीफ़ाइनल 2", "2016-07-30", "jaipur-pink-panthers", "dabang-delhi", 34, 30, _V["hyd_gachi"]),
+        _m("फ़ाइनल", "2016-07-31", "patna-pirates", "jaipur-pink-panthers", 37, 29, _V["hyd_gachi"]),
+    ],
+    5: [
+        _m("उद्घाटन मैच", "2017-07-28", "u-mumba", "bengal-warriors", 35, 28, _V["hyd_gachi"]),
+        _m("लीग चरण", "2017-08-05", "patna-pirates", "tamil-thalaivas", 48, 24, _V["che_jln"]),
+        _m("लीग चरण", "2017-08-12", "gujarat-giants", "telugu-titans", 38, 30, _V["ahm_eka"]),
+        _m("लीग चरण", "2017-09-02", "patna-pirates", "up-yoddhas", 51, 28, _V["luc_bbd"]),
+        _m("लीग चरण", "2017-09-20", "bengal-warriors", "gujarat-giants", 32, 31, _V["kol_netaji"]),
+        _m("एलिमिनेटर 1", "2017-10-24", "gujarat-giants", "bengaluru-bulls", 38, 33, _V["che_jln"]),
+        _m("एलिमिनेटर 2", "2017-10-24", "patna-pirates", "telugu-titans", 39, 34, _V["che_jln"]),
+        _m("सेमीफ़ाइनल 1", "2017-10-26", "gujarat-giants", "bengal-warriors", 33, 30, _V["che_jln"]),
+        _m("सेमीफ़ाइनल 2", "2017-10-26", "patna-pirates", "u-mumba", 42, 38, _V["che_jln"]),
+        _m("फ़ाइनल", "2017-10-28", "patna-pirates", "gujarat-giants", 55, 38, _V["che_jln"]),
+    ],
+    6: [
+        _m("उद्घाटन मैच", "2018-10-07", "tamil-thalaivas", "bengal-warriors", 39, 30, _V["che_jln"]),
+        _m("लीग चरण", "2018-10-20", "bengaluru-bulls", "u-mumba", 44, 33, _V["ben_kanteerava"]),
+        _m("लीग चरण", "2018-11-03", "gujarat-giants", "patna-pirates", 41, 38, _V["ahm_eka"]),
+        _m("लीग चरण", "2018-11-24", "bengaluru-bulls", "dabang-delhi", 39, 29, _V["ben_kanteerava"]),
+        _m("लीग चरण", "2018-12-15", "gujarat-giants", "u-mumba", 34, 28, _V["ahm_eka"]),
+        _m("एलिमिनेटर 1", "2018-12-29", "u-mumba", "tamil-thalaivas", 37, 31, _V["mum_nsci"]),
+        _m("एलिमिनेटर 2", "2018-12-29", "dabang-delhi", "telugu-titans", 36, 30, _V["mum_nsci"]),
+        _m("सेमीफ़ाइनल 1", "2019-01-03", "gujarat-giants", "dabang-delhi", 39, 31, _V["mum_nsci"]),
+        _m("सेमीफ़ाइनल 2", "2019-01-03", "bengaluru-bulls", "u-mumba", 36, 28, _V["mum_nsci"]),
+        _m("फ़ाइनल", "2019-01-05", "bengaluru-bulls", "gujarat-giants", 38, 33, _V["mum_nsci"]),
+    ],
+    7: [
+        _m("उद्घाटन मैच", "2019-07-20", "telugu-titans", "tamil-thalaivas", 34, 30, _V["hyd_gachi"]),
+        _m("लीग चरण", "2019-08-03", "bengaluru-bulls", "haryana-steelers", 54, 38, _V["ben_kanteerava"]),
+        _m("लीग चरण", "2019-08-24", "bengal-warriors", "patna-pirates", 40, 32, _V["kol_netaji"]),
+        _m("लीग चरण", "2019-09-14", "dabang-delhi", "u-mumba", 35, 29, _V["del_tyag"]),
+        _m("लीग चरण", "2019-10-05", "bengal-warriors", "dabang-delhi", 36, 34, _V["kol_netaji"]),
+        _m("एलिमिनेटर 1", "2019-10-14", "u-mumba", "haryana-steelers", 39, 33, _V["ahm_eka"]),
+        _m("एलिमिनेटर 2", "2019-10-14", "dabang-delhi", "bengaluru-bulls", 38, 33, _V["ahm_eka"]),
+        _m("सेमीफ़ाइनल 1", "2019-10-16", "bengal-warriors", "u-mumba", 37, 28, _V["ahm_eka"]),
+        _m("सेमीफ़ाइनल 2", "2019-10-16", "dabang-delhi", "haryana-steelers", 43, 39, _V["ahm_eka"]),
+        _m("फ़ाइनल", "2019-10-19", "bengal-warriors", "dabang-delhi", 39, 34, _V["ahm_eka"]),
+    ],
+    8: [
+        _m("उद्घाटन मैच", "2021-12-22", "u-mumba", "bengaluru-bulls", 36, 30, _V["ben_sheraton"]),
+        _m("लीग चरण", "2022-01-05", "dabang-delhi", "patna-pirates", 41, 35, _V["ben_sheraton"]),
+        _m("लीग चरण", "2022-01-20", "puneri-paltan", "u-mumba", 38, 33, _V["ben_sheraton"]),
+        _m("लीग चरण", "2022-02-01", "patna-pirates", "bengaluru-bulls", 45, 40, _V["ben_sheraton"]),
+        _m("लीग चरण", "2022-02-10", "dabang-delhi", "bengal-warriors", 37, 32, _V["ben_sheraton"]),
+        _m("एलिमिनेटर 1", "2022-02-19", "patna-pirates", "u-mumba", 35, 29, _V["ben_sheraton"]),
+        _m("एलिमिनेटर 2", "2022-02-19", "puneri-paltan", "bengaluru-bulls", 38, 35, _V["ben_sheraton"]),
+        _m("सेमीफ़ाइनल 1", "2022-02-23", "dabang-delhi", "puneri-paltan", 42, 31, _V["ben_sheraton"]),
+        _m("सेमीफ़ाइनल 2", "2022-02-23", "patna-pirates", "u-mumba", 39, 32, _V["ben_sheraton"]),
+        _m("फ़ाइनल", "2022-02-25", "dabang-delhi", "patna-pirates", 37, 36, _V["ben_sheraton"]),
+    ],
+    9: [
+        _m("उद्घाटन मैच", "2022-10-07", "bengaluru-bulls", "tamil-thalaivas", 36, 32, _V["ben_kanteerava"]),
+        _m("लीग चरण", "2022-10-22", "jaipur-pink-panthers", "patna-pirates", 41, 34, _V["jai_sms"]),
+        _m("लीग चरण", "2022-11-12", "puneri-paltan", "u-mumba", 39, 30, _V["pun_balewadi"]),
+        _m("लीग चरण", "2022-11-26", "jaipur-pink-panthers", "dabang-delhi", 37, 33, _V["hyd_gmc"]),
+        _m("लीग चरण", "2022-12-03", "puneri-paltan", "bengaluru-bulls", 35, 29, _V["mum_nsci"]),
+        _m("एलिमिनेटर 1", "2022-12-12", "jaipur-pink-panthers", "u-mumba", 38, 34, _V["mum_nsci"]),
+        _m("एलिमिनेटर 2", "2022-12-12", "dabang-delhi", "bengaluru-bulls", 35, 30, _V["mum_nsci"]),
+        _m("सेमीफ़ाइनल 1", "2022-12-15", "puneri-paltan", "dabang-delhi", 40, 32, _V["mum_nsci"]),
+        _m("सेमीफ़ाइनल 2", "2022-12-15", "jaipur-pink-panthers", "u-mumba", 41, 30, _V["mum_nsci"]),
+        _m("फ़ाइनल", "2022-12-17", "jaipur-pink-panthers", "puneri-paltan", 33, 29, _V["mum_nsci"]),
+    ],
+    10: [
+        _m("उद्घाटन मैच", "2023-12-02", "puneri-paltan", "telugu-titans", 45, 30, _V["hyd_gmc"]),
+        _m("लीग चरण", "2023-12-16", "haryana-steelers", "dabang-delhi", 39, 34, _V["hyd_gmc"]),
+        _m("लीग चरण", "2024-01-10", "tamil-thalaivas", "bengal-warriors", 74, 37, _V["che_jln"]),
+        _m("लीग चरण", "2024-01-25", "puneri-paltan", "haryana-steelers", 36, 31, _V["pun_balewadi"]),
+        _m("लीग चरण", "2024-02-05", "dabang-delhi", "jaipur-pink-panthers", 38, 33, _V["del_thyagaraj"]),
+        _m("एलिमिनेटर 1", "2024-02-23", "haryana-steelers", "bengal-warriors", 35, 29, _V["hyd_gmc"]),
+        _m("एलिमिनेटर 2", "2024-02-23", "dabang-delhi", "u-mumba", 37, 31, _V["hyd_gmc"]),
+        _m("सेमीफ़ाइनल 1", "2024-02-28", "puneri-paltan", "dabang-delhi", 33, 28, _V["hyd_gmc"]),
+        _m("सेमीफ़ाइनल 2", "2024-02-28", "haryana-steelers", "patna-pirates", 32, 30, _V["hyd_gmc"]),
+        _m("फ़ाइनल", "2024-03-01", "puneri-paltan", "haryana-steelers", 28, 25, _V["hyd_gmc"]),
+    ],
+    11: [
+        _m("उद्घाटन मैच", "2024-10-18", "patna-pirates", "jaipur-pink-panthers", 40, 36, _V["vizag"]),
+        _m("लीग चरण", "2024-11-01", "haryana-steelers", "bengaluru-bulls", 38, 30, _V["vizag"]),
+        _m("लीग चरण", "2024-11-20", "patna-pirates", "dabang-delhi", 42, 35, _V["pun_balewadi"]),
+        _m("लीग चरण", "2024-12-10", "haryana-steelers", "telugu-titans", 41, 28, _V["hyd_gmc"]),
+        _m("लीग चरण", "2024-12-20", "patna-pirates", "u-mumba", 37, 33, _V["del_thyagaraj"]),
+        _m("एलिमिनेटर 1", "2024-12-28", "patna-pirates", "dabang-delhi", 36, 31, _V["pun_balewadi"]),
+        _m("एलिमिनेटर 2", "2024-12-28", "jaipur-pink-panthers", "bengaluru-bulls", 35, 30, _V["pun_balewadi"]),
+        _m("सेमीफ़ाइनल 1", "2024-12-30", "haryana-steelers", "jaipur-pink-panthers", 33, 29, _V["pun_balewadi"]),
+        _m("सेमीफ़ाइनल 2", "2024-12-30", "patna-pirates", "dabang-delhi", 34, 30, _V["pun_balewadi"]),
+        _m("फ़ाइनल", "2025-01-01", "haryana-steelers", "patna-pirates", 32, 23, _V["pun_balewadi"]),
+    ],
+}
+
 # ============================================================ GLOSSARY ========
 # Kabaddi terminology, used on the about / rules content.
 GLOSSARY = [
