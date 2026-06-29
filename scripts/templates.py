@@ -43,6 +43,23 @@ def esc(s):
     return html.escape(str(s), quote=True)
 
 
+def clamp_desc(s, n=160):
+    """Keep a meta description at or under n chars, cutting on a sentence or
+    word boundary so the result still reads as natural Hindi (no mid-word cuts)."""
+    s = " ".join(str(s).split())
+    if len(s) <= n:
+        return s
+    cut = s[:n]
+    # prefer ending on a Hindi sentence boundary (danda) past the halfway mark
+    i = cut.rfind("।")
+    if i >= n // 2:
+        return cut[:i + 1]
+    # otherwise fall back to the last word boundary, trimming dangling punctuation
+    i = cut.rfind(" ")
+    cut = (cut[:i] if i >= n // 2 else cut).rstrip(" ,·—-–")
+    return cut + "…"
+
+
 def slug(s):
     s = re.sub(r"[^a-zA-Z0-9]+", "-", str(s).lower()).strip("-")
     return s or "x"
@@ -94,16 +111,17 @@ def icon(name, cls="w-5 h-5", color=None):
 
 
 def role_badge(rkey):
-    label, _rslug, cls = ROLE.get(rkey, ROLE["raider"])
-    return (f'<span class="inline-block text-xs font-semibold px-2 py-0.5 '
-            f'rounded border {cls}">{label}</span>')
+    label, rslug, _cls = ROLE.get(rkey, ROLE["raider"])
+    return f'<span class="rb rb-{rslug}">{label}</span>'
 
 
 # ---- <head> -----------------------------------------------------------------
-def head(title, desc, canonical, depth, jsonld=None, og_type="website"):
+def head(title, desc, canonical, depth, jsonld=None, og_type="website",
+         robots="index, follow"):
     """depth = number of '../' to reach site root from this page."""
     up = "../" * depth
     canon = SITE + canonical
+    desc = clamp_desc(desc)          # keep every meta description <= 160 chars
     ld = ""
     if jsonld:
         ld = '<script type="application/ld+json">' + \
@@ -123,7 +141,7 @@ gtag('config', 'G-B3MY8Q8ST7');
 </script>
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="{robots}">
 <link rel="canonical" href="{esc(canon)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
@@ -132,6 +150,8 @@ gtag('config', 'G-B3MY8Q8ST7');
 <meta property="og:site_name" content="{BRAND_EN}">
 <meta property="og:locale" content="hi_IN">
 <meta property="og:image" content="{SITE}/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{esc(title)}">
 <meta name="twitter:description" content="{esc(desc)}">
@@ -146,20 +166,7 @@ gtag('config', 'G-B3MY8Q8ST7');
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {{ theme: {{ extend: {{
-  colors: {{
-    'kb-orange':'#FF6B00','kb-dark':'#9A3412','kb-accent':'#FB923C',
-    'kb-bg':'#fdf7f2','kb-card':'#ffffff','kb-border':'#f0e3d8',
-    'kb-text':'#6b5d52','kb-ink':'#2a1c12','kb-mat':'#1d4ed8','kb-gold':'#d97706'
-  }},
-  fontFamily: {{
-    heading:['"Baloo 2"','"Noto Sans Devanagari"','sans-serif'],
-    body:['Inter','"Noto Sans Devanagari"','sans-serif']
-  }}
-}} }} }}
-</script>
+<link rel="stylesheet" href="{up}styles.css">
 <style>
   body{{font-family:Inter,'Noto Sans Devanagari',sans-serif;background:#fdf7f2;color:#2a1c12}}
   h1,h2,h3,h4,h5{{font-family:'Baloo 2','Noto Sans Devanagari',sans-serif}}
@@ -168,6 +175,16 @@ tailwind.config = {{ theme: {{ extend: {{
   tbody tr:hover td{{background:#fdf1e7}}
   .tnum{{font-variant-numeric:tabular-nums}}
   ::selection{{background:#fed7aa}}
+  /* Compact table cell styling (replaces repeated utility classes per cell). */
+  .ktbl th{{font-family:'Noto Sans Devanagari','Baloo 2',sans-serif;padding:.5rem .75rem;text-align:left;font-size:.75rem;line-height:1rem;font-weight:700;color:#6b5d52;text-transform:uppercase;letter-spacing:.025em;white-space:nowrap}}
+  .ktbl td{{padding:.5rem .75rem;text-align:left;font-size:.875rem;line-height:1.25rem;white-space:nowrap}}
+  .ktbl .ar{{text-align:right}}
+  .ktbl td.ar{{font-variant-numeric:tabular-nums}}
+  /* Compact role badge (replaces repeated utility classes per badge). */
+  .rb{{display:inline-block;font-family:'Noto Sans Devanagari','Baloo 2',sans-serif;font-size:.75rem;line-height:1rem;font-weight:600;padding:.125rem .5rem;border-radius:.25rem;border:1px solid}}
+  .rb-raider{{background:#fff7ed;color:#c2410c;border-color:#fed7aa}}
+  .rb-defender{{background:#f0f9ff;color:#0369a1;border-color:#bae6fd}}
+  .rb-allrounder{{background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe}}
 </style>
 {ld}
 </head>
@@ -245,7 +262,7 @@ def breadcrumb(depth, trail):
 def footer(depth):
     up = "../" * depth
     col = lambda title, links: (
-        f'<div><h4 class="hi font-heading font-bold text-kb-ink mb-3">{title}</h4>'
+        f'<div><h2 class="hi font-heading font-bold text-kb-ink mb-3">{title}</h2>'
         f'<div class="space-y-1.5 text-sm">' +
         "".join(f'<a href="{h}" class="hi block text-kb-text hover:text-kb-orange">{l}</a>'
                 for l, h in links) + "</div></div>")
@@ -269,8 +286,9 @@ def footer(depth):
 </body></html>"""
 
 
-def page(title, desc, canonical, depth, body, active="", trail=None, jsonld=None, og_type="website"):
-    out = head(title, desc, canonical, depth, jsonld, og_type)
+def page(title, desc, canonical, depth, body, active="", trail=None, jsonld=None,
+         og_type="website", robots="index, follow"):
+    out = head(title, desc, canonical, depth, jsonld, og_type, robots)
     out += nav(depth, active)
     if trail:
         out += breadcrumb(depth, trail)

@@ -15,6 +15,9 @@ from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTO
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
 TODAY = datetime.date.today().isoformat()
+# A slightly older date for content that rarely changes (about, privacy, 404),
+# so the sitemap reflects reality instead of stamping every URL identically.
+BUILD_DATE_STATIC = (datetime.date.today() - datetime.timedelta(days=30)).isoformat()
 INDEXNOW_KEY = "9d4e1f7a2c6b48e0a3f5c1d9b7e6a204"
 
 
@@ -58,21 +61,28 @@ def section_title(txt, sub=""):
             f'text-kb-ink flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>{txt}</h2>{s}</div>')
 
 
+def page_h1(txt, sub=""):
+    """Top-level page heading for section landing pages. Visually identical to
+    section_title but renders an <h1> so each landing page has exactly one h1
+    and the heading hierarchy reads h1 -> h2 -> h3 without skipping levels."""
+    s = f'<p class="hi text-kb-text mt-1">{sub}</p>' if sub else ""
+    return (f'<div class="mb-4"><h1 class="hi font-heading font-bold text-xl sm:text-2xl '
+            f'text-kb-ink flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>{txt}</h1>{s}</div>')
+
+
 def table(headers, rows, align_right=None):
     align_right = align_right or set()
     thead = "".join(
-        f'<th class="hi px-3 py-2 text-{("right" if i in align_right else "left")} '
-        f'text-xs font-bold text-kb-text uppercase tracking-wide whitespace-nowrap">{h}</th>'
+        f'<th{" class=\"ar\"" if i in align_right else ""}>{h}</th>'
         for i, h in enumerate(headers))
     body = ""
     for r in rows:
-        tds = ""
-        for i, c in enumerate(r):
-            a = "right tnum" if i in align_right else "left"
-            tds += f'<td class="px-3 py-2 text-{a} text-sm whitespace-nowrap">{c}</td>'
+        tds = "".join(
+            f'<td{" class=\"ar\"" if i in align_right else ""}>{c}</td>'
+            for i, c in enumerate(r))
         body += f"<tr class='border-t border-kb-border'>{tds}</tr>"
     return (f'<div class="overflow-x-auto bg-kb-card border border-kb-border rounded-xl">'
-            f'<table class="w-full min-w-full"><thead class="bg-kb-bg">'
+            f'<table class="w-full min-w-full ktbl"><thead class="bg-kb-bg">'
             f'<tr>{thead}</tr></thead><tbody>{body}</tbody></table></div>')
 
 
@@ -262,7 +272,7 @@ def build_player(p):
     role_hi = role_pill_label(p['role'])
     desc = (f"{p['name']} ({p['name_hi']}) के कबड्डी आँकड़े — प्रो कबड्डी लीग में {role_hi} के रूप में "
             f"{p['raid']:,} रेड अंक और {p['tackle']:,} टैकल अंक। सुपर 10, हाई 5 और करियर रिकॉर्ड हिंदी में।")[:300]
-    title = f"{p['name']} {p['name_hi']} — कबड्डी आँकड़े व करियर रिकॉर्ड"
+    title = f"{p['name']} {p['name_hi']} — कबड्डी आँकड़े"
     jsonld = {"@context": "https://schema.org", "@type": "Person", "name": p['name'],
               "alternateName": p['name_hi'], "url": f"{SITE}/players/{p['id']}/",
               "jobTitle": "Kabaddi Player", "nationality": p["nat"]}
@@ -281,11 +291,11 @@ def build_players_index():
     for i, p in enumerate(by_total):
         rows.append([f'<span class="text-kb-text tnum">{i+1}</span>',
                      plink(p["id"], depth),
-                     f'<span class="hi text-xs">{role_badge(p["role"])}</span>',
+                     role_badge(p["role"]),
                      f'<span class="hi text-xs text-kb-text">{esc(TEAMS[p["teams"][0]]["name_hi"]) if p["teams"] else ""}</span>',
                      f'{p["raid"]:,}', f'{p["tackle"]:,}', f'{p["total"]:,}'])
     body = f"""
-    {section_title('सभी खिलाड़ी', f'करियर कुल अंक के अनुसार शीर्ष {len(PLAYERS)} खिलाड़ी — किसी भी नाम पर क्लिक करें')}
+    {page_h1('सभी खिलाड़ी', f'करियर कुल अंक के अनुसार शीर्ष {len(PLAYERS)} खिलाड़ी — किसी भी नाम पर क्लिक करें')}
     <div class="mb-4"><button onclick="KB_search()" class="hi w-full sm:w-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-kb-border bg-white text-kb-text text-left hover:border-kb-orange">{icon('search','w-4 h-4')}खिलाड़ी का नाम खोजें…</button></div>
     {table([T['rank'], T['player'], T['role'], T['team'], T['raid_pts'], T['tackle_pts'], T['total_pts']], rows, align_right={4,5,6})}
     """
@@ -313,7 +323,7 @@ def build_teams_index():
           <div class="hi text-sm text-kb-text mb-2">{esc(t['city'])}, {esc(t['state'])}</div>
           <div class="flex items-center gap-2 text-sm"><span class="hi inline-flex items-center gap-1 text-kb-orange font-semibold">{icon('trophy','w-4 h-4')}{title_txt}</span>
           <span class="hi text-kb-text">· {t['est']} से</span></div></a>"""
-    body = f"""{section_title('सभी टीमें', 'प्रो कबड्डी लीग की सभी 12 फ़्रेंचाइज़ी — ख़िताब के अनुसार')}
+    body = f"""{page_h1('सभी टीमें', 'प्रो कबड्डी लीग की सभी 12 फ़्रेंचाइज़ी — ख़िताब के अनुसार')}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
     desc = "प्रो कबड्डी लीग की सभी 12 टीमें — पटना पाइरेट्स, यू मुंबा, जयपुर पिंक पैंथर्स समेत हर टीम का इतिहास, ख़िताब और प्रमुख खिलाड़ी हिंदी में।"
     write("teams/index.html", page("सभी कबड्डी टीमें — पीकेएल फ़्रेंचाइज़ी | कबड्डी आँकड़े",
@@ -375,7 +385,7 @@ def build_team(team_slug, t):
               "alternateName": t['name_hi'], "sport": "Kabaddi", "url": f"{SITE}/teams/{team_slug}/",
               "location": {"@type": "Place", "name": f"{t['city']}, {t['state']}"}}
     write(f"teams/{team_slug}/index.html",
-          page(f"{t['name_hi']} — पीकेएल टीम आँकड़े व इतिहास | कबड्डी आँकड़े",
+          page(f"{t['name_hi']} — पीकेएल टीम इतिहास | कबड्डी आँकड़े",
                desc, f"/teams/{team_slug}/", depth, body, active="teams",
                trail=[("होम", "../../"), ("टीमें", "../"), (t['name_hi'], None)],
                jsonld=jsonld), "0.7")
@@ -397,7 +407,7 @@ def build_seasons_index():
             f'<span class="tnum">{s["score"]}</span>',
             f'<span class="hi">{esc(s["mvp"][0])}</span>',
         ])
-    body = f"""{section_title('सभी पीकेएल सीज़न', 'प्रो कबड्डी लीग का हर सीज़न — चैंपियन, फ़ाइनल और एमवीपी')}
+    body = f"""{page_h1('सभी पीकेएल सीज़न', 'प्रो कबड्डी लीग का हर सीज़न — चैंपियन, फ़ाइनल और एमवीपी')}
       {table(['सीज़न', 'वर्ष', T['champion'], 'उपविजेता', 'फ़ाइनल', 'एमवीपी'], rows)}"""
     desc = f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) — हर सीज़न के चैंपियन, उपविजेता, फ़ाइनल स्कोर, शीर्ष रेडर, शीर्ष डिफेंडर और एमवीपी हिंदी में।"
     write("seasons/index.html", page("पीकेएल सभी सीज़न — चैंपियन व फ़ाइनल | कबड्डी आँकड़े",
@@ -544,7 +554,7 @@ def build_matches_index():
           <div class="hi text-xs text-kb-text mt-2">{len(ms)} प्रमुख मैच →</div></a>"""
 
     total_matches = sum(len(v) for v in MATCHES.values())
-    body = f"""{section_title('पीकेएल मैच परिणाम', 'प्रो कबड्डी लीग के हर सीज़न के प्रमुख मुक़ाबले — उद्घाटन मैच, प्लेऑफ़ और फ़ाइनल')}
+    body = f"""{page_h1('पीकेएल मैच परिणाम', 'प्रो कबड्डी लीग के हर सीज़न के प्रमुख मुक़ाबले — उद्घाटन मैच, प्लेऑफ़ और फ़ाइनल')}
       {C.prose([
         "यहाँ प्रो कबड्डी लीग के सभी ग्यारह सीज़नों के चुनिंदा मैच परिणाम एक जगह उपलब्ध हैं। "
         "हर सीज़न के लिए उद्घाटन मैच, कुछ प्रमुख लीग-चरण मुक़ाबले और पूरा प्लेऑफ़ क्रम "
@@ -695,7 +705,7 @@ def build_standings_index():
           <div class="hi text-xs text-kb-text mt-1">उपविजेता: {esc(ru['name_hi'])}</div>
           <div class="hi text-xs text-kb-text mt-2">{len(rows)} टीमें · पूरी अंक तालिका →</div></a>"""
 
-    body = f"""{section_title('पीकेएल अंक तालिका', 'प्रो कबड्डी लीग के हर सीज़न की पूरी टीम रैंकिंग, जीत-हार और अंक')}
+    body = f"""{page_h1('पीकेएल अंक तालिका', 'प्रो कबड्डी लीग के हर सीज़न की पूरी टीम रैंकिंग, जीत-हार और अंक')}
       {C.prose([
         "यहाँ प्रो कबड्डी लीग के सभी ग्यारह सीज़नों की विस्तृत अंक तालिका उपलब्ध है। "
         "हर सीज़न के लिए टीमों की अंतिम रैंकिंग, खेले गए मैच, जीत, हार, टाई, बनाए और दिए गए "
@@ -786,7 +796,7 @@ def build_records():
                    f'flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>{label}</h3>'
                    f'{table([T["rank"], T["player"], "अवधि", "अंक"], rows, align_right={2,3})}</div>')
 
-    body = f"""{section_title('कबड्डी रिकॉर्ड', 'प्रो कबड्डी लीग के सर्वकालिक रिकॉर्ड और लीडरबोर्ड')}
+    body = f"""{page_h1('कबड्डी रिकॉर्ड', 'प्रो कबड्डी लीग के सर्वकालिक रिकॉर्ड और लीडरबोर्ड')}
       {section_title('प्रमुख रिकॉर्ड') and ''}
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">{mcards}</section>
       <h2 class="hi font-heading font-bold text-xl text-kb-ink mb-4 flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>सर्वकालिक लीडरबोर्ड</h2>
@@ -959,7 +969,7 @@ def build_compare_index():
         rcards += f"""<a href="rivalry-{a}-vs-{b}/" class="block bg-kb-card border border-kb-border rounded-xl p-4 hover:border-kb-orange hover:shadow-md transition">
           <div class="hi font-heading font-bold text-kb-ink">{esc(ta['name_hi'])} <span class="text-kb-orange">बनाम</span> {esc(tb['name_hi'])}</div>
           <div class="hi text-xs text-kb-text mt-1">आमने-सामने: {wa}–{wb}</div></a>"""
-    body = f"""{section_title('तुलना और प्रतिद्वंद्विता', 'दो खिलाड़ियों की हेड-टू-हेड तुलना और टीम प्रतिद्वंद्विताएँ')}
+    body = f"""{page_h1('तुलना और प्रतिद्वंद्विता', 'दो खिलाड़ियों की हेड-टू-हेड तुलना और टीम प्रतिद्वंद्विताएँ')}
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>खिलाड़ी तुलना</h2>
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">{pcards}</section>
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>टीम प्रतिद्वंद्विताएँ</h2>
@@ -1004,7 +1014,7 @@ def build_compare_pair(a, b):
     desc = (f"{pa['name_hi']} बनाम {pb['name_hi']} — कबड्डी आँकड़ों की हेड-टू-हेड तुलना: रेड अंक, टैकल अंक, "
             f"सुपर 10, हाई 5 और करियर रिकॉर्ड हिंदी में।")[:300]
     write(f"compare/{a}-vs-{b}/index.html",
-          page(f"{pa['name_hi']} बनाम {pb['name_hi']} — तुलना | कबड्डी आँकड़े",
+          page(f"{pa['name_hi']} बनाम {pb['name_hi']} — तुलना",
                desc, f"/compare/{a}-vs-{b}/", depth, body, active="compare",
                trail=[("होम", "../../"), ("तुलना", "../"), (f"{pa['name_hi']} बनाम {pb['name_hi']}", None)]), "0.6")
     search_rows.append([f"{pa['name']} बनाम {pb['name']}", f"/compare/{a}-vs-{b}/", "तुलना",
@@ -1077,7 +1087,7 @@ def build_rivalry(a, b, narr, total=0, wins_a=0, wins_b=0, notable=None):
     """
     desc = (f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल की प्रतिद्वंद्विता: आमने-सामने का रिकॉर्ड ({wins_a}-{wins_b}), ख़िताब और यादगार मुक़ाबले हिंदी में।")[:300]
     write(f"compare/rivalry-{a}-vs-{b}/index.html",
-          page(f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल प्रतिद्वंद्विता | कबड्डी आँकड़े",
+          page(f"{ta['name_hi']} बनाम {tb['name_hi']} — प्रतिद्वंद्विता",
                desc, f"/compare/rivalry-{a}-vs-{b}/", depth, body, active="compare",
                trail=[("होम", "../../"), ("तुलना", "../"), (f"{ta['name_hi']} बनाम {tb['name_hi']}", None)]), "0.6")
     search_rows.append([f"{ta['name']} बनाम {tb['name']}", f"/compare/rivalry-{a}-vs-{b}/", "प्रतिद्वंद्विता",
@@ -1095,7 +1105,7 @@ def build_international():
     ag_women = [[y, f'<span class="hi font-medium">{w}</span>', f'<span class="hi text-kb-text">{ru}</span>',
                  f'<span class="tnum">{sc}</span>'] for (y, w, ru, sc) in ASIAN_GAMES_WOMEN]
 
-    body = f"""{section_title('अंतरराष्ट्रीय कबड्डी', 'विश्व कप और एशियाई खेलों में भारत का दबदबा')}
+    body = f"""{page_h1('अंतरराष्ट्रीय कबड्डी', 'विश्व कप और एशियाई खेलों में भारत का दबदबा')}
       {C.prose([
         "कबड्डी में भारत का अंतरराष्ट्रीय रिकॉर्ड बेजोड़ रहा है। अंतरराष्ट्रीय कबड्डी "
         "महासंघ (IKF) के मानक-शैली विश्व कप के तीनों संस्करण भारत ने जीते हैं, और हर "
@@ -1129,7 +1139,7 @@ def build_venues_index():
           <div class="hi text-sm text-kb-text mt-1">{esc(v['city_hi'])}, {esc(v['state'])}</div>
           {home_txt}
           <div class="hi text-xs text-kb-text mt-2">क्षमता: <b class="text-kb-ink tnum">{v['capacity']:,}</b> दर्शक · {len(v['seasons'])} सीज़न में मेज़बानी</div></a>"""
-    body = f"""{section_title('पीकेएल स्टेडियम', 'प्रो कबड्डी लीग के प्रमुख मैदान और एरिना — शहर, क्षमता और मेज़बान टीमें')}
+    body = f"""{page_h1('पीकेएल स्टेडियम', 'प्रो कबड्डी लीग के प्रमुख मैदान और एरिना — शहर, क्षमता और मेज़बान टीमें')}
       {C.prose([
         "प्रो कबड्डी लीग के मुक़ाबले देश भर के अलग-अलग शहरों के इनडोर स्टेडियमों में खेले जाते हैं। "
         "हर टीम का अपना गृह मैदान होता है जहाँ घरेलू दर्शकों का जोश खेल को और रोमांचक बना देता है। "
@@ -1208,7 +1218,7 @@ def build_venue(v):
               "address": {"@type": "PostalAddress", "addressLocality": v['city'],
                           "addressRegion": v['state'], "addressCountry": "IN"}}
     write(f"venues/{v['slug']}/index.html",
-          page(f"{v['name_hi']} — पीकेएल स्टेडियम | कबड्डी आँकड़े",
+          page(f"{v['name_hi']} — पीकेएल स्टेडियम",
                desc, f"/venues/{v['slug']}/", depth, body, active="venues",
                trail=[("होम", "../../"), ("स्टेडियम", "../"), (v['name_hi'], None)],
                jsonld=jsonld), "0.7")
@@ -1262,7 +1272,7 @@ def build_auctions_index():
           <div class="hi text-sm text-kb-text mt-0.5">वर्ष {a['year']}</div>
           <div class="hi text-sm text-kb-text mt-2">सबसे महँगा: <b class="text-kb-ink">{esc(top['name_hi'])}</b> — <span class="text-kb-orange font-semibold">{fmt_price(top['lakh'])}</span></div></a>"""
 
-    body = f"""{section_title('पीकेएल नीलामी इतिहास', 'प्रो कबड्डी लीग की खिलाड़ी नीलामी — सबसे महँगे खिलाड़ी, सीज़न-दर-सीज़न टॉप बोलियाँ')}
+    body = f"""{page_h1('पीकेएल नीलामी इतिहास', 'प्रो कबड्डी लीग की खिलाड़ी नीलामी — सबसे महँगे खिलाड़ी, सीज़न-दर-सीज़न टॉप बोलियाँ')}
       {C.prose([
         "प्रो कबड्डी लीग की खिलाड़ी नीलामी हर सीज़न से पहले होने वाला सबसे रोमांचक आयोजन है, "
         "जहाँ फ़्रेंचाइज़ी अपने पर्स (वेतन सीमा) के भीतर रहकर देश-विदेश के सर्वश्रेष्ठ रेडर और "
@@ -1277,8 +1287,8 @@ def build_auctions_index():
       {expensive_tbl}
       <div class="mt-8">{section_title('सीज़न-दर-सीज़न नीलामी', 'किसी भी सीज़न की टॉप बोलियाँ देखने के लिए चुनें')}</div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = ("प्रो कबड्डी लीग की खिलाड़ी नीलामी का पूरा इतिहास — पवन सहरावत (₹2.605 करोड़), "
-            "प्रदीप नरवाल, मोनू गोयत समेत सर्वकालिक सबसे महँगे खिलाड़ी और हर सीज़न की टॉप बोलियाँ हिंदी में।")
+    desc = ("पीकेएल खिलाड़ी नीलामी का इतिहास — पवन सहरावत, प्रदीप नरवाल समेत सर्वकालिक सबसे महँगे "
+            "खिलाड़ी और हर सीज़न की टॉप बोलियाँ हिंदी में।")
     write("auctions/index.html", page("पीकेएल नीलामी इतिहास — सबसे महँगे खिलाड़ी | कबड्डी आँकड़े",
                                        desc, "/auctions/", depth, body, active="auctions",
                                        trail=[("होम", "../"), ("नीलामी", None)]), "0.8")
@@ -1393,7 +1403,7 @@ def build_allstar_index():
           <div class="hi text-sm text-kb-text mt-1">{esc(g['subtitle_hi'])}</div>
           <div class="hi text-sm mt-2 text-kb-ink">परिणाम: <b>{esc(win['name_hi'])}</b> · {g['teamA']['score']}–{g['teamB']['score']}</div>
           <div class="hi text-xs text-kb-text mt-1">MVP: {esc(g['mvp']['name_hi'])} · {esc(g['venue_hi'])}</div></a>"""
-    body = f"""{section_title('पीकेएल ऑल-स्टार मुक़ाबले', 'प्रो कबड्डी लीग के शीर्ष सितारों के प्रदर्शनी ऑल-स्टार शोकेस — परिणाम, रोस्टर और सर्वश्रेष्ठ खिलाड़ी')}
+    body = f"""{page_h1('पीकेएल ऑल-स्टार मुक़ाबले', 'प्रो कबड्डी लीग के शीर्ष सितारों के प्रदर्शनी ऑल-स्टार शोकेस — परिणाम, रोस्टर और सर्वश्रेष्ठ खिलाड़ी')}
       {C.prose([
         "प्रो कबड्डी लीग में समय-समय पर ऑल-स्टार और प्रदर्शनी मुक़ाबले आयोजित किए गए, जिनमें "
         "लीग के सबसे चमकदार सितारों को दो टीमों में बाँटकर एक रोमांचक शोकेस मैच खिलाया गया। "
@@ -1404,7 +1414,7 @@ def build_allstar_index():
       <div class="grid sm:grid-cols-2 gap-3">{cards}</div>"""
     desc = ("पीकेएल ऑल-स्टार और प्रदर्शनी मुक़ाबलों का इतिहास — सीज़न 5 और सीज़न 6 शोकेस के "
             "परिणाम, टीम रोस्टर, MVP और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")
-    write("all-star/index.html", page("पीकेएल ऑल-स्टार मुक़ाबले — इतिहास, रोस्टर व MVP | कबड्डी आँकड़े",
+    write("all-star/index.html", page("पीकेएल ऑल-स्टार मुक़ाबले — रोस्टर व MVP | कबड्डी आँकड़े",
                                        desc, "/all-star/", depth, body, active="allstar",
                                        trail=[("होम", "../"), ("ऑल-स्टार", None)]), "0.8")
     search_rows.append(["ऑल-स्टार मुक़ाबले", "/all-star/", "पेज",
@@ -1486,7 +1496,7 @@ def build_allstar_game(g):
     desc = (f"{g['title_hi']} ({g['year']}) — {g['subtitle_hi']}। {win['name_hi']} विजयी "
             f"{g['teamA']['score']}–{g['teamB']['score']}, MVP {g['mvp']['name_hi']}। टीम रोस्टर और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")[:300]
     write(f"all-star/{g['slug']}/index.html",
-          page(f"{g['title_hi']} ({g['year']}) — रोस्टर व परिणाम | कबड्डी आँकड़े",
+          page(f"{g['title_hi']} — रोस्टर व परिणाम",
                desc, f"/all-star/{g['slug']}/", depth, body, active="allstar",
                trail=[("होम", "../../"), ("ऑल-स्टार", "../"), (f"सीज़न {g['season']}", None)]), "0.7")
     search_rows.append([g['title_hi'], f"/all-star/{g['slug']}/", "ऑल-स्टार",
@@ -1531,7 +1541,7 @@ def build_thisday():
         rows += (f'<a href="{ds}/" class="block bg-kb-card border border-kb-border rounded-xl p-4 hover:border-kb-orange transition">'
                  f'<div class="hi font-heading font-bold text-kb-ink">{da} {HI_MONTHS[mo]}</div>'
                  f'<div class="hi text-sm text-kb-text mt-1">{esc(evs[0][1])}{(" · और " + str(len(evs)-1) + " घटना") if len(evs)>1 else ""}</div></a>')
-    body = f"""{section_title('आज के दिन कबड्डी में', 'कबड्डी इतिहास की यादगार तारीख़ें')}
+    body = f"""{page_h1('आज के दिन कबड्डी में', 'कबड्डी इतिहास की यादगार तारीख़ें')}
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{rows}</section>"""
     desc = "आज के दिन कबड्डी में — पीकेएल फ़ाइनल, रिकॉर्ड और कबड्डी इतिहास की यादगार घटनाएँ तारीख़ के अनुसार हिंदी में।"
     write("aaj-ke-din/index.html", page("आज के दिन कबड्डी में — ऐतिहासिक घटनाएँ | कबड्डी आँकड़े",
@@ -1539,22 +1549,60 @@ def build_thisday():
                                          trail=[("होम", "../"), ("आज के दिन", None)]), "0.6")
     search_rows.append(["आज के दिन कबड्डी में", "/aaj-ke-din/", "पेज", "this day aaj ke din history kabaddi"])
 
+    all_days = sorted(days.keys())
+    # Internal "related pages" used on every on-this-day detail page.
+    related = [("सभी पीकेएल सीज़न", "../../seasons/"), ("अंक तालिका", "../../standings/"),
+               ("मैच परिणाम", "../../matches/"), ("कबड्डी रिकॉर्ड", "../../records/"),
+               ("नीलामी इतिहास", "../../auctions/"), ("सभी टीमें", "../../teams/"),
+               ("सभी खिलाड़ी", "../../players/")]
+
+    def _chip(label, href):
+        return (f'<a href="{href}" class="hi inline-block px-3 py-1.5 rounded-lg border '
+                f'border-kb-border bg-white text-sm text-kb-text hover:border-kb-orange '
+                f'hover:text-kb-orange transition">{label}</a>')
+
     for (mo, da), evs in days.items():
         ds = _dayslug(mo, da)
+        month = HI_MONTHS[mo]
+        evs_sorted = sorted(evs)
+        years = [str(y) for y, _, _ in evs_sorted]
+        titles = [t for _, t, _ in evs_sorted]
         cards = ""
-        for yr, title, desc2 in sorted(evs):
+        for yr, title, desc2 in evs_sorted:
             cards += (f'<div class="bg-kb-card border border-kb-border rounded-xl p-5 mb-4">'
                       f'<div class="hi text-sm font-bold text-kb-orange mb-1">{yr}</div>'
                       f'<h3 class="hi font-heading font-bold text-lg text-kb-ink mb-1">{esc(title)}</h3>'
                       f'<p class="hi text-[15px] text-kb-text leading-relaxed">{esc(desc2)}</p></div>')
-        body = f"""<h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink hi mb-1">{da} {HI_MONTHS[mo]} — कबड्डी इतिहास</h1>
-          <p class="hi text-kb-text mb-5">इस दिन कबड्डी जगत में क्या हुआ</p>{cards}
-          <div class="text-center mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी तारीख़ें</a></div>"""
-        d2 = f"{da} {HI_MONTHS[mo]} को कबड्डी इतिहास में हुई घटनाएँ — {evs[0][1]}।"
+        ev_word = "घटना" if len(evs_sorted) == 1 else "घटनाएँ"
+        lead = (f"{da} {month} प्रो कबड्डी लीग और भारतीय कबड्डी के इतिहास की एक यादगार तारीख़ है। "
+                f"इस दिन {esc(', '.join(titles))} जैसी {ev_word} दर्ज है — "
+                f"नीचे इस तारीख़ से जुड़े प्रमुख पल, फ़ाइनल स्कोर और रिकॉर्ड दिए गए हैं।")
+        # context paragraph — woven from this date's own events to avoid thin/duplicate pages
+        context = (f"प्रो कबड्डी लीग की शुरुआत 2014 में हुई और तब से यह दुनिया की सबसे लोकप्रिय "
+                   f"कबड्डी प्रतियोगिताओं में से एक बन चुकी है। {da} {month} ({', '.join(years)}) की "
+                   f"यह {ev_word} इसी सफ़र का हिस्सा है। हर सीज़न का पूरा ब्योरा, अंतिम अंक तालिका, "
+                   f"फ़ाइनल परिणाम और सर्वकालिक रिकॉर्ड जानने के लिए नीचे दिए गए पृष्ठ देखें।")
+        related_chips = "".join(_chip(l, h) for l, h in related)
+        # cross-links to a few other notable dates
+        others = [(m2, d2) for (m2, d2) in all_days if (m2, d2) != (mo, da)][:6]
+        other_chips = "".join(
+            _chip(f"{d2} {HI_MONTHS[m2]}", f"../{_dayslug(m2, d2)}/") for m2, d2 in others)
+        body = f"""<h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink hi mb-3">{da} {month} — कबड्डी इतिहास</h1>
+          <p class="hi text-[15px] text-kb-text leading-relaxed mb-6">{lead}</p>
+          <h2 class="hi font-heading font-bold text-xl text-kb-ink mb-4 flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>इस दिन की घटनाएँ</h2>
+          {cards}
+          <h2 class="hi font-heading font-bold text-xl text-kb-ink mt-8 mb-3 flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>इस तारीख़ का महत्व</h2>
+          <section class="bg-kb-card border border-kb-border rounded-2xl p-5 sm:p-6 mb-8"><p class="hi text-[15px] text-kb-text leading-relaxed">{context}</p></section>
+          <h2 class="hi font-heading font-bold text-xl text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>संबंधित पृष्ठ</h2>
+          <div class="flex flex-wrap gap-2 mb-8">{related_chips}</div>
+          <h2 class="hi font-heading font-bold text-xl text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>अन्य तारीख़ें</h2>
+          <div class="flex flex-wrap gap-2">{other_chips}</div>
+          <div class="text-center mt-8"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी तारीख़ें</a></div>"""
+        d2 = f"{da} {month} को कबड्डी इतिहास में हुई घटनाएँ — {evs_sorted[0][1]}।"
         write(f"aaj-ke-din/{ds}/index.html",
-              page(f"{da} {HI_MONTHS[mo]} — आज के दिन कबड्डी में | कबड्डी आँकड़े",
+              page(f"{da} {month} — आज के दिन कबड्डी में | कबड्डी आँकड़े",
                    d2, f"/aaj-ke-din/{ds}/", 2, body, active="thisday",
-                   trail=[("होम", "../../"), ("आज के दिन", "../"), (f"{da} {HI_MONTHS[mo]}", None)]), "0.5")
+                   trail=[("होम", "../../"), ("आज के दिन", "../"), (f"{da} {month}", None)]), "0.5")
 
 
 # ========================================================== STATIC CONTENT ====
@@ -1564,11 +1612,11 @@ def build_about():
         f'<div class="border-t border-kb-border py-3 first:border-0"><div class="hi font-semibold text-kb-ink">{esc(term)}</div>'
         f'<div class="hi text-sm text-kb-text mt-0.5 leading-relaxed">{esc(d)}</div></div>'
         for term, d in GLOSSARY)
-    body = C.about_body(section_title) + f"""
+    body = C.about_body(page_h1) + f"""
       <div class="mt-6">{section_title('कबड्डी शब्दावली', 'खेल के प्रमुख शब्द और नियम')}</div>
       <div class="bg-kb-card border border-kb-border rounded-2xl p-5 sm:p-6">{glossary}</div>"""
-    desc = ("कबड्डी आँकड़े (KabaddiStats.com) के बारे में जानें — हिंदी भाषी कबड्डी प्रेमियों के लिए "
-            "प्रो कबड्डी लीग और अंतरराष्ट्रीय कबड्डी आँकड़ों का मुफ़्त मंच, साथ ही कबड्डी शब्दावली।")
+    desc = ("कबड्डी आँकड़े (KabaddiStats.com) के बारे में जानें — हिंदी में प्रो कबड्डी लीग और "
+            "अंतरराष्ट्रीय कबड्डी आँकड़ों का मुफ़्त मंच, साथ ही कबड्डी शब्दावली।")
     write("about/index.html", page("हमारे बारे में — कबड्डी आँकड़े | KabaddiStats",
                                     desc, "/about/", depth, body, active="about",
                                     trail=[("होम", "../"), ("हमारे बारे में", None)]), "0.5")
@@ -1577,7 +1625,7 @@ def build_about():
 
 def build_privacy():
     depth = 1
-    body = C.privacy_body(section_title)
+    body = C.privacy_body(page_h1)
     desc = ("कबड्डी आँकड़े (KabaddiStats.com) की गोपनीयता नीति — हम आपकी जानकारी को कैसे "
             "एकत्र, उपयोग और सुरक्षित करते हैं, इसकी पूरी जानकारी हिंदी में।")
     write("privacy/index.html", page("गोपनीयता नीति — कबड्डी आँकड़े | KabaddiStats",
@@ -1698,11 +1746,22 @@ def write_static():
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
     (OUT / f"{INDEXNOW_KEY}.txt").write_text(INDEXNOW_KEY + "\n")
     (OUT / "CNAME").write_text("kabaddistats.com\n")
-    body404 = ('<div class="text-center py-20"><div class="hi font-heading font-extrabold text-6xl text-kb-orange">404</div>'
+    body404 = ('<div class="text-center py-20"><h1 class="hi font-heading font-extrabold text-6xl text-kb-orange">404</h1>'
                '<p class="hi text-xl text-kb-ink mt-4">यह पेज नहीं मिला</p>'
                '<a href="/" class="hi inline-block mt-6 px-5 py-2.5 rounded-lg bg-kb-orange text-white font-semibold">होम पर लौटें</a></div>')
     (OUT / "404.html").write_text(page("पेज नहीं मिला (404) | कबड्डी आँकड़े",
-        "यह पेज उपलब्ध नहीं है।", "/404.html", 0, body404, active=""), encoding="utf-8")
+        "यह पेज उपलब्ध नहीं है।", "/404.html", 0, body404, active="",
+        robots="noindex, nofollow"), encoding="utf-8")
+
+
+def _lastmod_for(url):
+    """Vary lastmod a little by section so the sitemap isn't a wall of identical
+    dates. Data-bearing sections (seasons, matches, standings, auctions) track the
+    latest build; mostly-static pages (about, privacy) carry an older date."""
+    static_older = ("/about/", "/privacy/", "/404.html")
+    if url in static_older:
+        return BUILD_DATE_STATIC
+    return TODAY
 
 
 def write_sitemap():
@@ -1711,7 +1770,7 @@ def write_sitemap():
         if url in seen:
             continue
         seen.add(url)
-        items.append(f"  <url><loc>{SITE}{url}</loc><lastmod>{TODAY}</lastmod>"
+        items.append(f"  <url><loc>{SITE}{url}</loc><lastmod>{_lastmod_for(url)}</lastmod>"
                      f"<priority>{prio}</priority></url>")
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -1750,6 +1809,27 @@ function KB_render(term){
 }
 window.KB_search=KB_search;
 """
+
+
+def build_css():
+    """Compile a static, minified Tailwind stylesheet (styles.css) from the
+    already-generated HTML, replacing the cdn.tailwindcss.com runtime. Runs after
+    all pages are written so only utilities actually present in the output are
+    emitted. If the Tailwind CLI is unavailable, the previously committed
+    styles.css is left in place and a warning is printed."""
+    cfg = ROOT / "build-css" / "tailwind.config.js"
+    src = ROOT / "build-css" / "input.css"
+    out = OUT / "styles.css"
+    try:
+        subprocess.run(
+            ["npx", "-y", "tailwindcss@3.4.17", "-c", str(cfg),
+             "-i", str(src), "-o", str(out), "--minify"],
+            check=True, capture_output=True, text=True)
+        print(f"  styles.css: {out.stat().st_size // 1024} KB")
+    except (FileNotFoundError, subprocess.CalledProcessError) as e:
+        msg = getattr(e, "stderr", "") or str(e)
+        print(f"  styles.css rebuild skipped ({msg.strip().splitlines()[-1] if msg.strip() else e});"
+              " keeping committed file.")
 
 
 # ==================================================================== MAIN ====
@@ -1797,6 +1877,7 @@ def main():
     build_about()
     build_privacy()
     write_static()
+    build_css()
     n = write_sitemap()
     print(f"  pages written: {len(urls)}  ·  sitemap urls: {n}")
     print(f"  players: {len(PLAYERS)}  teams: {len(TEAMS)}  seasons: {len(SEASONS)}")
