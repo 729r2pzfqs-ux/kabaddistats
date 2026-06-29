@@ -1022,83 +1022,6 @@ STANDINGS = {
 }
 
 
-# ============================================================ VENUES ==========
-# Major PKL host arenas. capacity is approximate. finals = list of season
-# numbers whose final was hosted here. home = list of team slugs that have
-# used the arena as a home ground. seasons = list of season numbers the
-# arena hosted matches/legs (approximate). All facts cross-checked broadly.
-def _v(slug, name, name_hi, city, city_hi, state, capacity, finals=None,
-       home=None, seasons=None, note=""):
-    return dict(slug=slug, name=name, name_hi=name_hi, city=city, city_hi=city_hi,
-                state=state, capacity=capacity, finals=finals or [],
-                home=home or [], seasons=seasons or [], note=note)
-
-
-VENUES = [
-    _v("shiv-chhatrapati-pune", "Shree Shiv Chhatrapati Sports Complex",
-       "श्री शिव छत्रपति स्पोर्ट्स कॉम्प्लेक्स", "Balewadi, Pune", "बालेवाड़ी, पुणे",
-       "महाराष्ट्र", 8000, finals=[11], home=["puneri-paltan"], seasons=[10, 11],
-       note="बालेवाड़ी का यह बहु-खेल परिसर 2008 राष्ट्रमंडल युवा खेलों के लिए बना था। यहीं सीज़न 11 का फ़ाइनल खेला गया, जिसमें हरियाणा स्टीलर्स ने अपना पहला ख़िताब जीता। पुनेरी पलटन का गृह मैदान।"),
-    _v("nsci-dome-mumbai", "Dome @ NSCI (SVP Stadium)",
-       "डोम @ एनएससीआई", "Worli, Mumbai", "वरली, मुंबई", "महाराष्ट्र", 5000,
-       finals=[2, 6, 9], home=["u-mumba"], seasons=[1, 2, 6, 9],
-       note="वरली स्थित नेशनल स्पोर्ट्स क्लब ऑफ़ इंडिया का गुंबदाकार इनडोर एरिना — पीकेएल का सबसे बार-बार इस्तेमाल हुआ फ़ाइनल स्थल। सीज़न 2, 6 और 9 के फ़ाइनल यहीं हुए।"),
-    _v("svp-indoor-mumbai", "Sardar Vallabhbhai Patel Indoor Stadium",
-       "सरदार वल्लभभाई पटेल इंडोर स्टेडियम", "Worli, Mumbai", "वरली, मुंबई", "महाराष्ट्र", 4000,
-       finals=[1], home=["u-mumba"], seasons=[1],
-       note="पीकेएल के उद्घाटन सीज़न (2014) के फ़ाइनल का गवाह, जहाँ जयपुर पिंक पैंथर्स ने यू मुंबा को 35–24 से हराकर पहला ख़िताब जीता। यू मुंबा का शुरुआती गृह मैदान।"),
-    _v("thyagaraj-delhi", "Thyagaraj Sports Complex",
-       "त्यागराज स्पोर्ट्स कॉम्प्लेक्स", "New Delhi", "नई दिल्ली", "दिल्ली", 5000,
-       finals=[3], home=["dabang-delhi"], seasons=[1, 3],
-       note="2010 राष्ट्रमंडल खेलों के लिए बना दिल्ली का पर्यावरण-अनुकूल इनडोर स्टेडियम। सीज़न 3 का फ़ाइनल यहीं हुआ, जहाँ पटना पाइरेट्स ने यू मुंबा को हराया। दबंग दिल्ली का गृह मैदान।"),
-    _v("gachibowli-hyderabad", "GMC Balayogi Athletic Stadium (Gachibowli)",
-       "गाचीबोवली इंडोर स्टेडियम", "Hyderabad", "हैदराबाद", "तेलंगाना", 5000,
-       finals=[4, 10], home=["telugu-titans"], seasons=[4, 10],
-       note="हैदराबाद के गाचीबोवली का इनडोर एरिना — सीज़न 4 और सीज़न 10 दोनों के फ़ाइनल का स्थल। तेलुगु टाइटन्स का गृह मैदान।"),
-    _v("jln-indoor-chennai", "Jawaharlal Nehru Indoor Stadium",
-       "जवाहरलाल नेहरू इंडोर स्टेडियम", "Chennai", "चेन्नई", "तमिलनाडु", 8000,
-       finals=[5], home=["tamil-thalaivas"], seasons=[5],
-       note="चेन्नई का प्रमुख इनडोर एरिना — सीज़न 5 के फ़ाइनल का स्थल, जहाँ पटना पाइरेट्स ने लगातार तीसरा ख़िताब जीता। तमिल थलाइवाज़ का गृह मैदान।"),
-    _v("eka-arena-ahmedabad", "EKA Arena by TransStadia",
-       "ईकेए एरिना (ट्रांसस्टेडिया)", "Ahmedabad", "अहमदाबाद", "गुजरात", 4000,
-       finals=[7], home=["gujarat-giants"], seasons=[5, 6, 7],
-       note="अहमदाबाद का आधुनिक परिवर्तनीय इनडोर एरिना — सीज़न 7 के फ़ाइनल का स्थल, जहाँ बंगाल वॉरियर्स ने दबंग दिल्ली को हराकर पहला ख़िताब जीता। गुजरात जायंट्स का गृह मैदान।"),
-    _v("kanteerava-bengaluru", "Sree Kanteerava Indoor Stadium",
-       "श्री कांतीरवा इनडोर स्टेडियम", "Bengaluru", "बेंगलुरु", "कर्नाटक", 4000,
-       home=["bengaluru-bulls"], seasons=[2, 3, 4, 5, 6, 7],
-       note="बेंगलुरु का इनडोर स्टेडियम — बेंगलुरु बुल्स का गृह मैदान और पवन सहरावत के 'हाई-फ़्लायर' दौर का साक्षी।"),
-    _v("netaji-kolkata", "Netaji Indoor Stadium",
-       "नेताजी इंडोर स्टेडियम", "Kolkata", "कोलकाता", "पश्चिम बंगाल", 12000,
-       home=["bengal-warriors"], seasons=[2, 3, 4, 5, 6, 7],
-       note="कोलकाता का ऐतिहासिक इनडोर एरिना और देश के सबसे बड़े इनडोर स्थलों में से एक। बंगाल वॉरियर्स का गृह मैदान।"),
-    _v("patliputra-patna", "Patliputra Sports Complex",
-       "पाटलिपुत्र स्पोर्ट्स कॉम्प्लेक्स", "Patna", "पटना", "बिहार", 5000,
-       home=["patna-pirates"], seasons=[2, 3, 4, 5, 6, 7],
-       note="पटना का बहु-खेल परिसर — पीकेएल की सबसे सफल टीम पटना पाइरेट्स का गृह मैदान, जहाँ प्रदीप नरवाल की 'डुबकी' को घरेलू समर्थन मिला।"),
-    _v("tau-devi-lal-panchkula", "Tau Devi Lal Sports Complex",
-       "ताऊ देवीलाल स्पोर्ट्स कॉम्प्लेक्स", "Panchkula", "पंचकूला", "हरियाणा", 4000,
-       home=["haryana-steelers"], seasons=[5, 6, 7],
-       note="पंचकूला का खेल परिसर — हरियाणा स्टीलर्स का गृह मैदान, कबड्डी के सबसे मज़बूत गढ़ हरियाणा का घरेलू केंद्र।"),
-    _v("bbd-lucknow", "Babu Banarasi Das Indoor Stadium",
-       "बाबू बनारसी दास इंडोर स्टेडियम", "Lucknow", "लखनऊ", "उत्तर प्रदेश", 4000,
-       home=["up-yoddhas"], seasons=[5, 6, 7],
-       note="लखनऊ का इनडोर स्टेडियम — यूपी योद्धा का गृह मैदान, जहाँ नितिन तोमर और प्रदीप नरवाल जैसे रेडर खेले।"),
-    _v("rajiv-gandhi-kochi", "Rajiv Gandhi Indoor Stadium",
-       "राजीव गांधी इंडोर स्टेडियम", "Kochi", "कोच्चि", "केरल", 4000,
-       seasons=[3, 4, 5],
-       note="कोच्चि के कदवंत्रा का इनडोर एरिना — दक्षिण भारत में पीकेएल के शुरुआती सीज़नों के लीग-चरण मुक़ाबलों का स्थल।"),
-    _v("sawai-mansingh-jaipur", "Sawai Mansingh Indoor Stadium",
-       "सवाई मानसिंह इंडोर स्टेडियम", "Jaipur", "जयपुर", "राजस्थान", 4000,
-       home=["jaipur-pink-panthers"], seasons=[2, 3, 4, 5],
-       note="जयपुर का इनडोर एरिना — जयपुर पिंक पैंथर्स का गृह मैदान, उद्घाटन चैंपियन टीम का घरेलू केंद्र।"),
-    _v("shaheed-vijay-singh-greater-noida", "Shaheed Vijay Singh Pathik Sports Complex",
-       "शहीद विजय सिंह पथिक स्पोर्ट्स कॉम्प्लेक्स", "Greater Noida", "ग्रेटर नोएडा", "उत्तर प्रदेश", 4000,
-       seasons=[5, 6],
-       note="ग्रेटर नोएडा का खेल परिसर — दिल्ली-एनसीआर क्षेत्र में पीकेएल मुक़ाबलों की मेज़बानी करने वाला आधुनिक स्थल।"),
-]
-
-VENUE_BY_SLUG = {v["slug"]: v for v in VENUES}
-
 # ============================================================ GLOSSARY ========
 # Kabaddi terminology, used on the about / rules content.
 GLOSSARY = [
@@ -1171,3 +1094,5 @@ VENUES = [
        "Pune", "पुणे", "महाराष्ट्र", 4000, [10], ["puneri-paltan"], opened="2008",
        note="बालेवाड़ी, पुणे के खेल परिसर का हिस्सा; पुनेरी पलटन के सीज़न 10 ख़िताबी अभियान के घरेलू मुक़ाबलों का मेज़बान रहा।"),
 ]
+
+VENUE_BY_SLUG = {v["slug"]: v for v in VENUES}
