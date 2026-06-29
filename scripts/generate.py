@@ -10,7 +10,7 @@ from templates import (esc, slug, icon, role_badge, page, SITE, BRAND, BRAND_EN,
 import content as C
 from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTONES,
                   WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES,
-                  STANDINGS)
+                  STANDINGS, VENUES)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
@@ -931,6 +931,106 @@ def build_international():
                         "international world cup asian games india iran kabaddi antarrashtriya"])
 
 
+# ================================================================ VENUES ======
+def build_venues_index():
+    depth = 1
+    cards = ""
+    for v in sorted(VENUES, key=lambda x: -x["capacity"]):
+        homes = " · ".join(TEAMS[h]["name_hi"] for h in v["home"] if h in TEAMS)
+        home_txt = (f'<div class="hi text-sm text-kb-orange font-semibold mt-1 flex items-center gap-1.5">'
+                    f'{icon("trophy","w-4 h-4")}गृह मैदान: {esc(homes)}</div>' if homes else "")
+        cards += f"""<a href="{v['slug']}/" class="block bg-kb-card border border-kb-border rounded-xl p-5 hover:border-kb-orange hover:shadow-md transition">
+          <div class="font-heading font-extrabold text-lg text-kb-ink hi leading-tight">{esc(v['name_hi'])}</div>
+          <div class="hi text-sm text-kb-text mt-1">{esc(v['city_hi'])}, {esc(v['state'])}</div>
+          {home_txt}
+          <div class="hi text-xs text-kb-text mt-2">क्षमता: <b class="text-kb-ink tnum">{v['capacity']:,}</b> दर्शक · {len(v['seasons'])} सीज़न में मेज़बानी</div></a>"""
+    body = f"""{section_title('पीकेएल स्टेडियम', 'प्रो कबड्डी लीग के प्रमुख मैदान और एरिना — शहर, क्षमता और मेज़बान टीमें')}
+      {C.prose([
+        "प्रो कबड्डी लीग के मुक़ाबले देश भर के अलग-अलग शहरों के इनडोर स्टेडियमों में खेले जाते हैं। "
+        "हर टीम का अपना गृह मैदान होता है जहाँ घरेलू दर्शकों का जोश खेल को और रोमांचक बना देता है। "
+        "यहाँ पीकेएल के प्रमुख स्टेडियमों की सूची है — उनकी क्षमता, स्थान, मेज़बान टीमें और किन सीज़नों "
+        "के यादगार मुक़ाबले व फ़ाइनल वहाँ खेले गए।",
+      ])}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
+    desc = ("प्रो कबड्डी लीग के सभी प्रमुख स्टेडियम और एरिना — पुणे, दिल्ली, मुंबई, हैदराबाद, चेन्नई, "
+            "कोलकाता समेत हर मैदान की क्षमता, स्थान और मेज़बान टीमें हिंदी में।")
+    write("venues/index.html", page("पीकेएल स्टेडियम — सभी मैदान व एरिना | कबड्डी आँकड़े",
+                                     desc, "/venues/", depth, body, active="venues",
+                                     trail=[("होम", "../"), ("स्टेडियम", None)]), "0.8")
+    search_rows.append(["स्टेडियम", "/venues/", "पेज",
+                        "venues stadium arena maidan pkl kabaddi ground"])
+
+
+def build_venue(v):
+    depth = 2
+    homes = [TEAMS[h] for h in v["home"] if h in TEAMS]
+    home_chips = ""
+    for h in v["home"]:
+        t = TEAMS.get(h)
+        if not t:
+            continue
+        home_chips += (f'<a href="../../teams/{h}/" class="hi inline-flex items-center gap-1.5 px-3 py-1.5 '
+                       f'rounded-lg border border-kb-border bg-white text-sm text-kb-ink hover:border-kb-orange transition">'
+                       f'<span class="w-2.5 h-2.5 rounded-full" style="background:{t["color"]}"></span>{esc(t["name_hi"])}</a>')
+    if not home_chips:
+        home_chips = '<span class="hi text-kb-text text-sm">कोई निश्चित गृह टीम नहीं।</span>'
+
+    # season chips (seasons hosted), link to season pages
+    season_chips = ""
+    for n in v["seasons"]:
+        season_chips += (f'<a href="../../seasons/season-{n}/" class="hi inline-flex items-center gap-1 px-3 py-1.5 '
+                         f'rounded-lg bg-kb-orange text-white text-sm font-semibold hover:bg-kb-dark transition">सीज़न {n}</a>')
+    if not season_chips:
+        season_chips = '<span class="hi text-kb-text text-sm">डेटा शीघ्र जोड़ा जाएगा।</span>'
+
+    tiles = f"""<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      {stat('क्षमता', f"{v['capacity']:,}")}
+      {stat('सीज़न मेज़बानी', len(v['seasons']))}
+      {stat('शहर', '', v['city_hi'])}
+      {stat('निर्माण' if v['opened'] else 'राज्य', v['opened'] if v['opened'] else '', '' if v['opened'] else v['state'])}</div>"""
+
+    facts = table(['विवरण', 'जानकारी'], [
+        ['<span class="hi">स्टेडियम</span>', f'<span class="hi">{esc(v["name_hi"])}</span>'],
+        ['<span class="hi">अंग्रेज़ी नाम</span>', f'<span>{esc(v["name"])}</span>'],
+        ['<span class="hi">शहर</span>', f'<span class="hi">{esc(v["city_hi"])} ({esc(v["city"])})</span>'],
+        ['<span class="hi">राज्य</span>', f'<span class="hi">{esc(v["state"])}</span>'],
+        ['<span class="hi">दर्शक क्षमता</span>', f'<span class="tnum">{v["capacity"]:,}</span>'],
+        ['<span class="hi">निर्माण वर्ष</span>', f'<span class="tnum">{esc(v["opened"]) if v["opened"] else "—"}</span>'],
+    ])
+
+    body = f"""
+    <div class="bg-kb-card border border-kb-border rounded-2xl p-5 sm:p-6 mb-6" style="border-top:4px solid #FF6B00">
+      <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-kb-ink leading-tight hi">{esc(v['name_hi'])}</h1>
+      <div class="text-lg text-kb-text">{esc(v['name'])}</div>
+      <div class="hi text-sm text-kb-text mt-1">{esc(v['city_hi'])}, {esc(v['state'])}</div>
+    </div>
+    {tiles}
+    {C.prose([v['note']])}
+    {section_title('गृह टीमें', 'इस मैदान को अपना घरेलू मैदान मानने वाली टीमें')}
+    <div class="flex flex-wrap gap-2 mb-8">{home_chips}</div>
+    {section_title('मेज़बानी किए सीज़न', 'इस स्टेडियम में खेले गए पीकेएल सीज़न')}
+    <div class="flex flex-wrap gap-2 mb-8">{season_chips}</div>
+    {section_title('स्टेडियम विवरण')}
+    {facts}
+    <div class="mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी स्टेडियम</a></div>
+    """
+    home_txt = (f"{homes[0]['name_hi']} का गृह मैदान" if homes else "पीकेएल मैदान")
+    desc = (f"{v['name_hi']} ({v['city_hi']}, {v['state']}) — {home_txt}। दर्शक क्षमता {v['capacity']:,}, "
+            f"पीकेएल के {len(v['seasons'])} सीज़न की मेज़बानी। स्टेडियम का इतिहास और विवरण हिंदी में।")[:300]
+    jsonld = {"@context": "https://schema.org", "@type": "StadiumOrArena", "name": v['name'],
+              "alternateName": v['name_hi'], "url": f"{SITE}/venues/{v['slug']}/",
+              "maximumAttendeeCapacity": v['capacity'],
+              "address": {"@type": "PostalAddress", "addressLocality": v['city'],
+                          "addressRegion": v['state'], "addressCountry": "IN"}}
+    write(f"venues/{v['slug']}/index.html",
+          page(f"{v['name_hi']} — पीकेएल स्टेडियम | कबड्डी आँकड़े",
+               desc, f"/venues/{v['slug']}/", depth, body, active="venues",
+               trail=[("होम", "../../"), ("स्टेडियम", "../"), (v['name_hi'], None)],
+               jsonld=jsonld), "0.7")
+    search_rows.append([v['name_hi'], f"/venues/{v['slug']}/", "स्टेडियम",
+                        f"{v['name']} {v['name_hi']} {v['city']} {v['city_hi']} stadium venue arena kabaddi".lower()])
+
+
 # ============================================================ THIS DAY ========
 # (month, day, year, title_hi, desc_hi)
 THISDAY = [
@@ -1215,6 +1315,9 @@ def main():
         prev_s = SEASONS[i-1] if i > 0 else None
         next_s = SEASONS[i+1] if i < len(SEASONS)-1 else None
         build_season_standings(s, prev_s, next_s)
+    build_venues_index()
+    for v in VENUES:
+        build_venue(v)
     build_records()
     build_compare_index()
     for a, b in COMPARE_PAIRS:
