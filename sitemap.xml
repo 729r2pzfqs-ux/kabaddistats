@@ -32,6 +32,7 @@
   <url><loc>https://kabaddistats.com/players/narender/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/surender-gill/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/meetu/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kabaddistats.com/players/ayan-lohchab/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/fazel-atrachali/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/surjeet-singh/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/manjeet-chhillar/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
@@ -56,6 +57,7 @@
   <url><loc>https://kabaddistats.com/players/sajin-c/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/shubham-shinde/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/neeraj-kumar/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kabaddistats.com/players/navdeep/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/ran-singh/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/anil-kumar-pp/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/hadi-tajik/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
@@ -101,6 +103,7 @@
   <url><loc>https://kabaddistats.com/players/neeraj-narwal/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/ashish-sangwan/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/rahul-sethpal/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kabaddistats.com/players/deepak-sankar/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/sumit-haryana/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/vinay-hs/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/players/mohit-nandal/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
@@ -157,6 +160,7 @@
   <url><loc>https://kabaddistats.com/seasons/season-9/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/seasons/season-10/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/seasons/season-11/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kabaddistats.com/seasons/season-12/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/matches/</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://kabaddistats.com/matches/season-1/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/matches/season-2/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
@@ -169,6 +173,7 @@
   <url><loc>https://kabaddistats.com/matches/season-9/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/matches/season-10/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/matches/season-11/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kabaddistats.com/matches/season-12/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/standings/</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://kabaddistats.com/standings/season-1/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/standings/season-2/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
@@ -181,6 +186,7 @@
   <url><loc>https://kabaddistats.com/standings/season-9/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/standings/season-10/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/standings/season-11/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kabaddistats.com/standings/season-12/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/venues/</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://kabaddistats.com/venues/shree-shiv-chhatrapati-pune/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/venues/thyagaraj-delhi/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
@@ -207,6 +213,7 @@
   <url><loc>https://kabaddistats.com/auctions/season-9/</loc><lastmod>2026-06-29</lastmod><priority>0.6</priority></url>
   <url><loc>https://kabaddistats.com/auctions/season-10/</loc><lastmod>2026-06-29</lastmod><priority>0.6</priority></url>
   <url><loc>https://kabaddistats.com/auctions/season-11/</loc><lastmod>2026-06-29</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kabaddistats.com/auctions/season-12/</loc><lastmod>2026-06-29</lastmod><priority>0.6</priority></url>
   <url><loc>https://kabaddistats.com/all-star/</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://kabaddistats.com/all-star/season-5/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://kabaddistats.com/all-star/season-6/</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>

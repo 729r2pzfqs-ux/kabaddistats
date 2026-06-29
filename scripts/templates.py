@@ -261,7 +261,7 @@ def footer(depth):
     {col("संपर्क", [(CONTACT, "mailto:"+CONTACT)])}
   </div>
   <div class="border-t border-kb-border pt-6 text-center text-sm text-kb-text">
-    <p class="hi mb-1">प्रो कबड्डी लीग (सीज़न 1–11) और अंतरराष्ट्रीय कबड्डी के सार्वजनिक रूप से उपलब्ध आँकड़ों पर आधारित।</p>
+    <p class="hi mb-1">प्रो कबड्डी लीग (सीज़न 1–12) और अंतरराष्ट्रीय कबड्डी के सार्वजनिक रूप से उपलब्ध आँकड़ों पर आधारित।</p>
     <p class="hi">© 2026 कबड्डी आँकड़े · KabaddiStats.com — किसी भी कबड्डी बोर्ड या लीग से आधिकारिक रूप से संबद्ध नहीं।</p>
   </div>
 </div>

@@ -17,6 +17,21 @@ OUT = ROOT
 TODAY = datetime.date.today().isoformat()
 INDEXNOW_KEY = "9d4e1f7a2c6b48e0a3f5c1d9b7e6a204"
 
+
+def _end_year(y):
+    """Return the four-digit ending year of a season-year string (e.g. '2023-24' -> '2024')."""
+    parts = str(y).split("-")
+    if len(parts) == 2 and len(parts[1]) == 2:
+        return parts[0][:2] + parts[1]
+    return parts[0]
+
+
+N_SEASONS = len(SEASONS)               # total number of PKL seasons in the dataset
+FIRST_YEAR = _end_year(SEASONS[0]["year"])     # '2014'
+LAST_YEAR = _end_year(SEASONS[-1]["year"])     # latest season's ending year
+SEASON_RANGE_HI = f"1 से {N_SEASONS}"          # e.g. '1 से 12'
+YEAR_RANGE_HI = f"{FIRST_YEAR} से {LAST_YEAR}"  # e.g. '2014 से 2025'
+
 urls = []           # (path, priority) for sitemap
 search_rows = []    # [name, url, kind_hi, haystack]
 
@@ -155,7 +170,7 @@ def build_home():
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
       {stat('खिलाड़ी', f'{len(PLAYERS)}+')}
       {stat('टीमें', f'{len(TEAMS)}')}
-      {stat('सीज़न', f'{len(SEASONS)}', '2014 से 2024')}
+      {stat('सीज़न', f'{len(SEASONS)}', YEAR_RANGE_HI)}
       {stat('कुल रेड अंक', f'{total_raid/1000:.0f}K+')}
     </section>
     {champ_html}
@@ -174,7 +189,7 @@ def build_home():
     <div class="text-center"><a href="records/" class="hi text-kb-orange font-semibold hover:underline">सभी रिकॉर्ड देखें →</a></div>
     <div class="mt-12">{C.prose([
       "<b>कबड्डी आँकड़े</b> (KabaddiStats.com) हिंदी भाषी कबड्डी प्रेमियों के लिए एक "
-      "संपूर्ण आँकड़ा मंच है, जहाँ प्रो कबड्डी लीग (पीकेएल) के सभी 11 सीज़न और "
+      f"संपूर्ण आँकड़ा मंच है, जहाँ प्रो कबड्डी लीग (पीकेएल) के सभी {N_SEASONS} सीज़न और "
       "अंतरराष्ट्रीय कबड्डी के विस्तृत रिकॉर्ड एक ही जगह उपलब्ध हैं। यहाँ शीर्ष "
       "खिलाड़ियों की प्रोफ़ाइल, रेड और टैकल अंक, सुपर 10, हाई 5, सुपर रेड व सुपर टैकल "
       "जैसी हर जानकारी सरल हिंदी में मौजूद है।",
@@ -384,7 +399,7 @@ def build_seasons_index():
         ])
     body = f"""{section_title('सभी पीकेएल सीज़न', 'प्रो कबड्डी लीग का हर सीज़न — चैंपियन, फ़ाइनल और एमवीपी')}
       {table(['सीज़न', 'वर्ष', T['champion'], 'उपविजेता', 'फ़ाइनल', 'एमवीपी'], rows)}"""
-    desc = "प्रो कबड्डी लीग के सभी सीज़न (1 से 11) — हर सीज़न के चैंपियन, उपविजेता, फ़ाइनल स्कोर, शीर्ष रेडर, शीर्ष डिफेंडर और एमवीपी हिंदी में।"
+    desc = f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) — हर सीज़न के चैंपियन, उपविजेता, फ़ाइनल स्कोर, शीर्ष रेडर, शीर्ष डिफेंडर और एमवीपी हिंदी में।"
     write("seasons/index.html", page("पीकेएल सभी सीज़न — चैंपियन व फ़ाइनल | कबड्डी आँकड़े",
                                       desc, "/seasons/", depth, body, active="seasons",
                                       trail=[("होम", "../"), ("सीज़न", None)]), "0.8")
@@ -484,7 +499,8 @@ def _match_teams_cell(m, depth):
 
 def _stage_pill(stage):
     is_final = "फ़ाइनल" in stage and "सेमी" not in stage
-    is_knockout = is_final or "सेमी" in stage or "एलिमिनेटर" in stage
+    is_knockout = (is_final or "सेमी" in stage or "एलिमिनेटर" in stage
+                   or "क्वालिफ़ायर" in stage or "प्ले-इन" in stage)
     cls = ("bg-kb-orange text-white" if is_final
            else "bg-orange-50 text-orange-700 border border-orange-200" if is_knockout
            else "bg-kb-bg text-kb-text border border-kb-border")
@@ -535,7 +551,7 @@ def build_matches_index():
         "(एलिमिनेटर, सेमीफ़ाइनल और फ़ाइनल) दिया गया है — तारीख़, टीमें, स्कोर और स्थल के साथ।",
       ])}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = ("प्रो कबड्डी लीग के सभी सीज़न (1 से 11) के मैच परिणाम — उद्घाटन मैच, सेमीफ़ाइनल, "
+    desc = (f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) के मैच परिणाम — उद्घाटन मैच, सेमीफ़ाइनल, "
             "फ़ाइनल और प्रमुख लीग मुक़ाबलों के स्कोर, तारीख़ और स्थल हिंदी में।")
     write("matches/index.html", page("पीकेएल मैच परिणाम — सभी सीज़न | कबड्डी आँकड़े",
                                       desc, "/matches/", depth, body, active="matches",
@@ -687,7 +703,7 @@ def build_standings_index():
         "पहुँचीं। पहले चार सीज़नों में आठ-आठ टीमें थीं; सीज़न 5 से लीग में बारह टीमें खेलती हैं।",
       ])}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = ("प्रो कबड्डी लीग के सभी सीज़न (1 से 11) की अंक तालिका — टीम रैंकिंग, जीत-हार, "
+    desc = (f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) की अंक तालिका — टीम रैंकिंग, जीत-हार, "
             "अंक अंतर, कुल अंक और प्लेऑफ़ क्वालिफ़िकेशन हिंदी में।")
     write("standings/index.html", page("पीकेएल अंक तालिका — सभी सीज़न | कबड्डी आँकड़े",
                                         desc, "/standings/", depth, body, active="standings",
@@ -1056,7 +1072,7 @@ def build_rivalry(a, b, narr, total=0, wins_a=0, wins_b=0, notable=None):
     {C.prose([narr])}
     {stats}
     {nm}
-    <p class="hi text-xs text-kb-text text-center mb-6">आँकड़े पीकेएल सीज़न 1–11 के अनुमानित कुल हैं और संदर्भ के लिए दिए गए हैं।</p>
+    <p class="hi text-xs text-kb-text text-center mb-6">आँकड़े पीकेएल सीज़न 1–{N_SEASONS} के अनुमानित कुल हैं और संदर्भ के लिए दिए गए हैं।</p>
     <div class="text-center"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी तुलनाएँ</a></div>
     """
     desc = (f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल की प्रतिद्वंद्विता: आमने-सामने का रिकॉर्ड ({wins_a}-{wins_b}), ख़िताब और यादगार मुक़ाबले हिंदी में।")[:300]
