@@ -1,0 +1,68 @@
+# KabaddiStats (कबड्डी आँकड़े)
+
+> The most comprehensive Hindi-language Pro Kabaddi League statistics database on the web.
+
+KabaddiStats.com covers the complete history of the Pro Kabaddi League (PKL) from Season 1 (2014) to Season 12 (2025), including every season's champions, standings, match results, player profiles, all 12 franchises, venues, auction histories, and head-to-head comparisons. All content is written in Hindi (Devanagari). The site also documents international kabaddi (World Cup, Asian Games), all-time records, PKL All-Star showcase games, and a "This Day in Kabaddi" historical calendar.
+
+## Key Facts
+
+- 12 PKL seasons documented (Season 1 / 2014 to Season 12 / 2025) — champions, standings, top performers
+- 133 players profiled with raid points, tackle points, Super 10s, High 5s and career totals
+- 12 franchises (teams) tracked with season-by-season history
+- 13 venues / home arenas documented
+- 77 head-to-head comparison pages — 49 player vs player matchups and 28 team rivalries
+- 12 season auction summaries
+- 2 PKL All-Star showcase games (Season 5 and Season 6) — rosters, MVPs, results
+- 11 "This Day in Kabaddi" (आज के दिन) historical date pages
+- All-time records and leaderboards, plus international kabaddi (World Cup, Asian Games)
+- 311 pages total
+- Language: Hindi (Devanagari, lang="hi")
+
+## Sections
+
+- [Home](https://kabaddistats.com/index.html): Main landing page with site overview and navigation
+- [Players](https://kabaddistats.com/players/index.html): Career profiles for 133 kabaddi players, including raid points, tackle points, Super 10s and High 5s
+- [Teams](https://kabaddistats.com/teams/index.html): Profiles for all 12 PKL franchises with season-by-season history
+- [Seasons](https://kabaddistats.com/seasons/index.html): PKL seasons 1 to 12, including champions, standings and top performers
+- [Standings](https://kabaddistats.com/standings/index.html): Final league standings for each PKL season
+- [Matches](https://kabaddistats.com/matches/index.html): Match results and fixtures for each PKL season
+- [Venues](https://kabaddistats.com/venues/index.html): Stadium and home-arena information for PKL venues
+- [Auctions](https://kabaddistats.com/auctions/index.html): Player auction summaries for each PKL season
+- [Compare](https://kabaddistats.com/compare/index.html): Head-to-head comparisons — player vs player and team rivalries
+- [All-Star](https://kabaddistats.com/all-star/index.html): PKL All-Star showcase games (Season 5 and Season 6) — rosters, MVPs and results
+- [Records](https://kabaddistats.com/records/index.html): All-time leaderboards and kabaddi records
+- [International](https://kabaddistats.com/international/index.html): International kabaddi history — World Cup and Asian Games
+- [This Day in Kabaddi](https://kabaddistats.com/aaj-ke-din/index.html): Historical kabaddi events by calendar date (आज के दिन)
+- [About](https://kabaddistats.com/about/index.html): About the site and data sources
+- [Privacy](https://kabaddistats.com/privacy/index.html): Privacy policy
+- [Sitemap](https://kabaddistats.com/sitemap.xml): Full XML sitemap of all 311 pages
+
+## URL Patterns
+
+- Player profile: https://kabaddistats.com/players/{player-slug}/ (e.g. /players/pardeep-narwal/)
+- Team profile: https://kabaddistats.com/teams/{team-slug}/ (e.g. /teams/patna-pirates/)
+- Season overview: https://kabaddistats.com/seasons/season-{n}/ (n = 1 to 12)
+- Season standings: https://kabaddistats.com/standings/season-{n}/
+- Season matches: https://kabaddistats.com/matches/season-{n}/
+- Season auction: https://kabaddistats.com/auctions/season-{n}/
+- Venue: https://kabaddistats.com/venues/{venue-slug}/ (e.g. /venues/patliputra-patna/)
+- Player comparison: https://kabaddistats.com/compare/{player-a}-vs-{player-b}/ (e.g. /compare/ajay-thakur-vs-pardeep-narwal/)
+- Team rivalry: https://kabaddistats.com/compare/{team-a}-vs-{team-b}/
+- All-Star game: https://kabaddistats.com/all-star/season-{n}/ (Season 5 and Season 6)
+- This Day in Kabaddi: https://kabaddistats.com/aaj-ke-din/{महीना-दिन}/ (date pages in Hindi, e.g. /aaj-ke-din/अक्टूबर-13/)
+
+## Teams
+
+bengal-warriors, bengaluru-bulls, dabang-delhi, gujarat-giants, haryana-steelers, jaipur-pink-panthers, patna-pirates, puneri-paltan, tamil-thalaivas, telugu-titans, u-mumba, up-yoddhas
+
+## Data Sources
+
+Hand-compiled from public sources — the official prokabaddi.com, Olympics.com, Wikipedia, and major kabaddi statistics aggregators. Season finals, champions, venues, records and award winners are cross-verified. Career aggregate totals are approximate, as official player profiles publish only current-season figures.
+
+## Notes
+
+- This is a static HTML site hosted on GitHub Pages and served via Cloudflare
+- All content is in Hindi (Devanagari script)
+- Independent, non-commercial fan resource — not affiliated with the Pro Kabaddi League or any kabaddi board
+- Data is factual and statistical in nature
+- Contact: info@kabaddistats.com
