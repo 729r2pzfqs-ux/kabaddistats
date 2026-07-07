@@ -12,6 +12,30 @@ from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTO
                   WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES,
                   STANDINGS, VENUES, AUCTIONS, ALL_TIME_EXPENSIVE, ALL_STAR_GAMES)
 
+# Wikipedia sameAs links for top players (verified notable PKL players)
+WIKIPEDIA_LINKS = {
+    "pardeep-narwal":      "https://en.wikipedia.org/wiki/Pardeep_Narwal",
+    "pawan-sehrawat":      "https://en.wikipedia.org/wiki/Pawan_Sehrawat",
+    "naveen-kumar":        "https://en.wikipedia.org/wiki/Naveen_Kumar_(kabaddi_player)",
+    "arjun-deshwal":       "https://en.wikipedia.org/wiki/Arjun_Deshwal",
+    "rahul-chaudhari":     "https://en.wikipedia.org/wiki/Rahul_Chaudhari_(kabaddi_player)",
+    "fazel-atrachali":     "https://en.wikipedia.org/wiki/Fazel_Atrachali",
+    "ajay-thakur":         "https://en.wikipedia.org/wiki/Ajay_Thakur",
+    "anup-kumar":          "https://en.wikipedia.org/wiki/Anup_Kumar_(kabaddi_player)",
+    "deepak-niwas-hooda":  "https://en.wikipedia.org/wiki/Deepak_Niwas_Hooda",
+    "manjeet-chhillar":    "https://en.wikipedia.org/wiki/Manjeet_Chhillar",
+    "surjeet-singh":       "https://en.wikipedia.org/wiki/Surjeet_Singh_(kabaddi_player)",
+    "maninder-singh":      "https://en.wikipedia.org/wiki/Maninder_Singh_(kabaddi_player)",
+    "rohit-kumar":         "https://en.wikipedia.org/wiki/Rohit_Kumar_(kabaddi_player)",
+    "sandeep-narwal":      "https://en.wikipedia.org/wiki/Sandeep_Narwal",
+    "jang-kun-lee":        "https://en.wikipedia.org/wiki/Jang_Kun_Lee",
+    "nitesh-kumar":        "https://en.wikipedia.org/wiki/Nitesh_Kumar_(kabaddi_player)",
+    "sunil-kumar":         "https://en.wikipedia.org/wiki/Sunil_Kumar_(kabaddi_player)",
+    "ashu-malik":          "https://en.wikipedia.org/wiki/Ashu_Malik",
+    "vikash-kandola":      "https://en.wikipedia.org/wiki/Vikash_Kandola",
+    "sachin-tanwar":       "https://en.wikipedia.org/wiki/Sachin_Tanwar",
+}
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT
 TODAY = datetime.date.today().isoformat()
@@ -216,8 +240,8 @@ def build_home():
               "potentialAction": {"@type": "SearchAction",
                                   "target": SITE + "/players/?q={search_term_string}",
                                   "query-input": "required name=search_term_string"}}
-    desc = ("हिंदी में कबड्डी के विस्तृत आँकड़े — प्रो कबड्डी लीग के खिलाड़ी, टीमें, हर सीज़न का "
-            "ब्योरा, रेड व टैकल रिकॉर्ड, सुपर 10, हाई 5 और हेड-टू-हेड तुलना।")
+    desc = ("KabaddiStats — Pro Kabaddi League (PKL) stats, player profiles, season records in Hindi. "
+            "हिंदी में कबड्डी आँकड़े — खिलाड़ी, टीमें, सीज़न, रेड व टैकल रिकॉर्ड।")
     write("index.html", page(f"{BRAND} — हिंदी में कबड्डी सांख्यिकी | KabaddiStats",
                              desc, "/", depth, body, active="home", jsonld=jsonld), "1.0")
 
@@ -270,12 +294,17 @@ def build_player(p):
     </div>
     """
     role_hi = role_pill_label(p['role'])
-    desc = (f"{p['name']} ({p['name_hi']}) के कबड्डी आँकड़े — प्रो कबड्डी लीग में {role_hi} के रूप में "
-            f"{p['raid']:,} रेड अंक और {p['tackle']:,} टैकल अंक। सुपर 10, हाई 5 और करियर रिकॉर्ड हिंदी में।")[:300]
+    _role_en = {"raider": "raider", "defender": "defender", "allrounder": "all-rounder"}[p['role']]
+    desc = (f"{p['name']} kabaddi stats — {p['total']:,} career points, PKL {_role_en}. "
+            f"{p['name_hi']} के आँकड़े: {p['raid']:,} रेड, {p['tackle']:,} टैकल। करियर रिकॉर्ड हिंदी में।")
     title = f"{p['name']} {p['name_hi']} — कबड्डी आँकड़े"
     jsonld = {"@context": "https://schema.org", "@type": "Person", "name": p['name'],
               "alternateName": p['name_hi'], "url": f"{SITE}/players/{p['id']}/",
               "jobTitle": "Kabaddi Player", "nationality": p["nat"]}
+    if p['id'] in WIKIPEDIA_LINKS:
+        jsonld["sameAs"] = [WIKIPEDIA_LINKS[p['id']]]
+    if p.get('note'):
+        jsonld["description"] = p['note']
     trail = [("होम", "../../"), ("खिलाड़ी", "../../players/"), (p['name'], None)]
     write(f"players/{p['id']}/index.html",
           page(title, desc, f"/players/{p['id']}/", depth, body,
@@ -299,8 +328,8 @@ def build_players_index():
     <div class="mb-4"><button onclick="KB_search()" class="hi w-full sm:w-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-kb-border bg-white text-kb-text text-left hover:border-kb-orange">{icon('search','w-4 h-4')}खिलाड़ी का नाम खोजें…</button></div>
     {table([T['rank'], T['player'], T['role'], T['team'], T['raid_pts'], T['tackle_pts'], T['total_pts']], rows, align_right={4,5,6})}
     """
-    desc = ("प्रो कबड्डी लीग के शीर्ष खिलाड़ियों की पूरी सूची — रेडर और डिफेंडर के रेड अंक, टैकल अंक, "
-            "सुपर 10, हाई 5 और करियर रिकॉर्ड हिंदी में।")
+    desc = ("PKL player stats — Pro Kabaddi League raiders, defenders, all-time career records. "
+            "प्रो कबड्डी लीग के शीर्ष खिलाड़ी — रेड, टैकल, सुपर 10 के आँकड़े हिंदी में।")
     write("players/index.html", page("सभी कबड्डी खिलाड़ी — आँकड़े व रिकॉर्ड | कबड्डी आँकड़े",
                                       desc, "/players/", depth, body, active="players",
                                       trail=[("होम", "../"), ("खिलाड़ी", None)]), "0.8")
@@ -325,7 +354,8 @@ def build_teams_index():
           <span class="hi text-kb-text">· {t['est']} से</span></div></a>"""
     body = f"""{page_h1('सभी टीमें', 'प्रो कबड्डी लीग की सभी 12 फ़्रेंचाइज़ी — ख़िताब के अनुसार')}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = "प्रो कबड्डी लीग की सभी 12 टीमें — पटना पाइरेट्स, यू मुंबा, जयपुर पिंक पैंथर्स समेत हर टीम का इतिहास, ख़िताब और प्रमुख खिलाड़ी हिंदी में।"
+    desc = ("PKL teams — Patna Pirates, U Mumba, Jaipur Pink Panthers and all 12 franchises. "
+            "पीकेएल की सभी 12 टीमें — ख़िताब, इतिहास और प्रमुख खिलाड़ी हिंदी में।")
     write("teams/index.html", page("सभी कबड्डी टीमें — पीकेएल फ़्रेंचाइज़ी | कबड्डी आँकड़े",
                                     desc, "/teams/", depth, body, active="teams",
                                     trail=[("होम", "../"), ("टीमें", None)]), "0.8")
@@ -379,8 +409,9 @@ def build_team(team_slug, t):
     {roster_html}
     """
     title_txt = (f"{len(titles)} बार चैंपियन" if titles else "पीकेएल फ़्रेंचाइज़ी")
-    desc = (f"{t['name_hi']} ({t['name']}) — {t['city']} की प्रो कबड्डी लीग टीम, {title_txt}। "
-            f"टीम का इतिहास, ख़िताब, सीज़न और प्रमुख खिलाड़ी हिंदी में।")[:300]
+    _title_en = f"{len(titles)}-time PKL champions" if titles else "PKL franchise"
+    desc = (f"{t['name']} ({t['name_hi']}) — Pro Kabaddi League team, {_title_en}. "
+            f"टीम इतिहास, ख़िताब और प्रमुख खिलाड़ी हिंदी में।")[:160]
     jsonld = {"@context": "https://schema.org", "@type": "SportsTeam", "name": t['name'],
               "alternateName": t['name_hi'], "sport": "Kabaddi", "url": f"{SITE}/teams/{team_slug}/",
               "location": {"@type": "Place", "name": f"{t['city']}, {t['state']}"}}
@@ -409,7 +440,8 @@ def build_seasons_index():
         ])
     body = f"""{page_h1('सभी पीकेएल सीज़न', 'प्रो कबड्डी लीग का हर सीज़न — चैंपियन, फ़ाइनल और एमवीपी')}
       {table(['सीज़न', 'वर्ष', T['champion'], 'उपविजेता', 'फ़ाइनल', 'एमवीपी'], rows)}"""
-    desc = f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) — हर सीज़न के चैंपियन, उपविजेता, फ़ाइनल स्कोर, शीर्ष रेडर, शीर्ष डिफेंडर और एमवीपी हिंदी में।"
+    desc = (f"PKL season history — Pro Kabaddi League champions and finals, Season 1 to {N_SEASONS}. "
+            f"प्रो कबड्डी लीग के सभी सीज़न — चैंपियन, फ़ाइनल स्कोर और एमवीपी हिंदी में।")
     write("seasons/index.html", page("पीकेएल सभी सीज़न — चैंपियन व फ़ाइनल | कबड्डी आँकड़े",
                                       desc, "/seasons/", depth, body, active="seasons",
                                       trail=[("होम", "../"), ("सीज़न", None)]), "0.8")
@@ -473,8 +505,8 @@ def build_season(s, prev_s, next_s):
     </div>
     {navs}
     """
-    desc = (f"प्रो कबड्डी लीग सीज़न {s['num']} ({s['year']}) — {ch['name_hi']} चैंपियन, फ़ाइनल में "
-            f"{ru['name_hi']} को {s['score']} से हराया। शीर्ष रेडर {s['raider'][0]}, एमवीपी {s['mvp'][0]}।")[:300]
+    desc = (f"PKL Season {s['num']} ({s['year']}) — {ch['name']} champions, final score {s['score']}. "
+            f"सीज़न {s['num']}: {ch['name_hi']} चैंपियन, एमवीपी {s['mvp'][0]}।")[:160]
     write(f"seasons/season-{s['num']}/index.html",
           page(f"पीकेएल सीज़न {s['num']} ({s['year']}) — चैंपियन व आँकड़े | कबड्डी आँकड़े",
                desc, f"/seasons/season-{s['num']}/", depth, body, active="seasons",
@@ -561,8 +593,8 @@ def build_matches_index():
         "(एलिमिनेटर, सेमीफ़ाइनल और फ़ाइनल) दिया गया है — तारीख़, टीमें, स्कोर और स्थल के साथ।",
       ])}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = (f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) के मैच परिणाम — उद्घाटन मैच, सेमीफ़ाइनल, "
-            "फ़ाइनल और प्रमुख लीग मुक़ाबलों के स्कोर, तारीख़ और स्थल हिंदी में।")
+    desc = (f"PKL match results — Pro Kabaddi League scores, finals, all seasons. "
+            f"पीकेएल के सभी सीज़न ({SEASON_RANGE_HI}) के मैच परिणाम — उद्घाटन, सेमीफ़ाइनल, फ़ाइनल।")
     write("matches/index.html", page("पीकेएल मैच परिणाम — सभी सीज़न | कबड्डी आँकड़े",
                                       desc, "/matches/", depth, body, active="matches",
                                       trail=[("होम", "../"), ("मैच परिणाम", None)]), "0.8")
@@ -607,9 +639,8 @@ def build_season_matches(s, prev_s, next_s):
     </div>
     {navs}
     """
-    desc = (f"प्रो कबड्डी लीग सीज़न {num} ({s['year']}) के मैच परिणाम — उद्घाटन मैच, सेमीफ़ाइनल और "
-            f"फ़ाइनल के स्कोर, तारीख़ और स्थल। {ch['name_hi']} ने {ru['name_hi']} को फ़ाइनल में "
-            f"{s['score']} से हराया।")[:300]
+    desc = (f"PKL Season {num} ({s['year']}) match results — {ch['name']} beat {ru['name']} {s['score']} in final. "
+            f"सीज़न {num} मैच परिणाम: फ़ाइनल, सेमीफ़ाइनल और प्रमुख मुक़ाबले।")[:160]
     write(f"matches/season-{num}/index.html",
           page(f"पीकेएल सीज़न {num} मैच परिणाम ({s['year']}) | कबड्डी आँकड़े",
                desc, f"/matches/season-{num}/", depth, body, active="matches",
@@ -713,8 +744,8 @@ def build_standings_index():
         "पहुँचीं। पहले चार सीज़नों में आठ-आठ टीमें थीं; सीज़न 5 से लीग में बारह टीमें खेलती हैं।",
       ])}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = (f"प्रो कबड्डी लीग के सभी सीज़न ({SEASON_RANGE_HI}) की अंक तालिका — टीम रैंकिंग, जीत-हार, "
-            "अंक अंतर, कुल अंक और प्लेऑफ़ क्वालिफ़िकेशन हिंदी में।")
+    desc = (f"PKL standings — Pro Kabaddi League points table, team rankings, all seasons. "
+            f"पीकेएल के सभी सीज़न ({SEASON_RANGE_HI}) की अंक तालिका — जीत-हार, अंक और रैंकिंग।")
     write("standings/index.html", page("पीकेएल अंक तालिका — सभी सीज़न | कबड्डी आँकड़े",
                                         desc, "/standings/", depth, body, active="standings",
                                         trail=[("होम", "../"), ("अंक तालिका", None)]), "0.8")
@@ -759,8 +790,8 @@ def build_season_standings(s, prev_s, next_s):
     </div>
     {navs}
     """
-    desc = (f"प्रो कबड्डी लीग सीज़न {num} ({s['year']}) अंक तालिका — सभी {len(rows)} टीमों की रैंकिंग, "
-            f"जीत-हार, अंक अंतर और कुल अंक। {ch['name_hi']} चैंपियन, {ru['name_hi']} उपविजेता।")[:300]
+    desc = (f"PKL Season {num} ({s['year']}) standings — {ch['name']} champions. "
+            f"सीज़न {num} अंक तालिका: सभी {len(rows)} टीमों की रैंकिंग, जीत-हार और कुल अंक।")[:160]
     write(f"standings/season-{num}/index.html",
           page(f"पीकेएल सीज़न {num} अंक तालिका ({s['year']}) | कबड्डी आँकड़े",
                desc, f"/standings/season-{num}/", depth, body, active="standings",
@@ -801,8 +832,8 @@ def build_records():
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">{mcards}</section>
       <h2 class="hi font-heading font-bold text-xl text-kb-ink mb-4 flex items-center gap-2"><span class="w-1.5 h-6 rounded mat-stripe inline-block"></span>सर्वकालिक लीडरबोर्ड</h2>
       {boards}"""
-    desc = ("प्रो कबड्डी लीग के सर्वकालिक रिकॉर्ड हिंदी में — सर्वाधिक रेड अंक, सर्वाधिक टैकल अंक, "
-            "सर्वाधिक सुपर 10, सर्वाधिक हाई 5, एक मैच में सर्वाधिक अंक और टीम रिकॉर्ड।")
+    desc = ("PKL all-time records — most raid points, tackle points, Super 10s, High 5s. "
+            "प्रो कबड्डी लीग के सर्वकालिक रिकॉर्ड — रेड, टैकल, सुपर 10 और हाई 5 लीडरबोर्ड।")
     write("records/index.html", page("कबड्डी रिकॉर्ड — सर्वकालिक लीडरबोर्ड | कबड्डी आँकड़े",
                                       desc, "/records/", depth, body, active="records",
                                       trail=[("होम", "../"), ("रिकॉर्ड", None)]), "0.8")
@@ -974,7 +1005,8 @@ def build_compare_index():
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">{pcards}</section>
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>टीम प्रतिद्वंद्विताएँ</h2>
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{rcards}</section>"""
-    desc = "कबड्डी खिलाड़ियों की हेड-टू-हेड तुलना और पीकेएल टीम प्रतिद्वंद्विताएँ — प्रदीप नरवाल बनाम पवन सहरावत समेत कई दिलचस्प मुक़ाबले हिंदी में।"
+    desc = ("PKL player comparison — head-to-head kabaddi stats, Pardeep Narwal vs Pawan Sehrawat and more. "
+            "पीकेएल खिलाड़ी तुलना और टीम प्रतिद्वंद्विताएँ हिंदी में।")
     write("compare/index.html", page("कबड्डी तुलना — खिलाड़ी व टीम हेड-टू-हेड | कबड्डी आँकड़े",
                                       desc, "/compare/", depth, body, active="compare",
                                       trail=[("होम", "../"), ("तुलना", None)]), "0.7")
@@ -1011,8 +1043,8 @@ def build_compare_pair(a, b):
     </div>
     <p class="hi text-sm text-kb-text text-center">नारंगी रंग में दिखाया गया मान उस मीट्रिक में आगे रहने वाले खिलाड़ी का है। आँकड़े पीकेएल करियर के अनुमानित कुल हैं।</p>
     """
-    desc = (f"{pa['name_hi']} बनाम {pb['name_hi']} — कबड्डी आँकड़ों की हेड-टू-हेड तुलना: रेड अंक, टैकल अंक, "
-            f"सुपर 10, हाई 5 और करियर रिकॉर्ड हिंदी में।")[:300]
+    desc = (f"{pa['name']} vs {pb['name']} kabaddi — head-to-head career raid, tackle, Super 10 stats. "
+            f"{pa['name_hi']} बनाम {pb['name_hi']}: रेड, टैकल, करियर तुलना हिंदी में।")[:160]
     write(f"compare/{a}-vs-{b}/index.html",
           page(f"{pa['name_hi']} बनाम {pb['name_hi']} — तुलना",
                desc, f"/compare/{a}-vs-{b}/", depth, body, active="compare",
@@ -1085,7 +1117,8 @@ def build_rivalry(a, b, narr, total=0, wins_a=0, wins_b=0, notable=None):
     <p class="hi text-xs text-kb-text text-center mb-6">आँकड़े पीकेएल सीज़न 1–{N_SEASONS} के अनुमानित कुल हैं और संदर्भ के लिए दिए गए हैं।</p>
     <div class="text-center"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी तुलनाएँ</a></div>
     """
-    desc = (f"{ta['name_hi']} बनाम {tb['name_hi']} — पीकेएल की प्रतिद्वंद्विता: आमने-सामने का रिकॉर्ड ({wins_a}-{wins_b}), ख़िताब और यादगार मुक़ाबले हिंदी में।")[:300]
+    desc = (f"{ta['name']} vs {tb['name']} kabaddi rivalry — {wins_a}-{wins_b} head-to-head record, PKL battles. "
+            f"{ta['name_hi']} बनाम {tb['name_hi']}: आमने-सामने रिकॉर्ड और यादगार मुक़ाबले।")[:160]
     write(f"compare/rivalry-{a}-vs-{b}/index.html",
           page(f"{ta['name_hi']} बनाम {tb['name_hi']} — प्रतिद्वंद्विता",
                desc, f"/compare/rivalry-{a}-vs-{b}/", depth, body, active="compare",
@@ -1118,7 +1151,8 @@ def build_international():
       <div class="mb-8">{table(['वर्ष', 'स्वर्ण पदक विजेता'], ag_men)}</div>
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>एशियाई खेल — महिला स्वर्ण</h2>
       {table(['वर्ष', 'स्वर्ण', 'रजत', 'फ़ाइनल स्कोर'], ag_women)}"""
-    desc = "अंतरराष्ट्रीय कबड्डी — कबड्डी विश्व कप के विजेता, एशियाई खेलों में भारत के स्वर्ण पदक और भारत बनाम ईरान की प्रतिद्वंद्विता हिंदी में।"
+    desc = ("International kabaddi — World Cup winners, Asian Games gold medals, India vs Iran. "
+            "कबड्डी विश्व कप विजेता और एशियाई खेलों में भारत के पदक हिंदी में।")
     write("international/index.html", page("अंतरराष्ट्रीय कबड्डी — विश्व कप व एशियाई खेल | कबड्डी आँकड़े",
                                            desc, "/international/", depth, body, active="seasons",
                                            trail=[("होम", "../"), ("अंतरराष्ट्रीय कबड्डी", None)]), "0.6")
@@ -1147,8 +1181,8 @@ def build_venues_index():
         "के यादगार मुक़ाबले व फ़ाइनल वहाँ खेले गए।",
       ])}
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = ("प्रो कबड्डी लीग के सभी प्रमुख स्टेडियम और एरिना — पुणे, दिल्ली, मुंबई, हैदराबाद, चेन्नई, "
-            "कोलकाता समेत हर मैदान की क्षमता, स्थान और मेज़बान टीमें हिंदी में।")
+    desc = ("PKL stadiums and venues — Pune, Delhi, Mumbai, Hyderabad kabaddi arenas, capacity and host teams. "
+            "पीकेएल के सभी प्रमुख स्टेडियम — क्षमता, स्थान और मेज़बान टीमें हिंदी में।")
     write("venues/index.html", page("पीकेएल स्टेडियम — सभी मैदान व एरिना | कबड्डी आँकड़े",
                                      desc, "/venues/", depth, body, active="venues",
                                      trail=[("होम", "../"), ("स्टेडियम", None)]), "0.8")
@@ -1210,8 +1244,8 @@ def build_venue(v):
     <div class="mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी स्टेडियम</a></div>
     """
     home_txt = (f"{homes[0]['name_hi']} का गृह मैदान" if homes else "पीकेएल मैदान")
-    desc = (f"{v['name_hi']} ({v['city_hi']}, {v['state']}) — {home_txt}। दर्शक क्षमता {v['capacity']:,}, "
-            f"पीकेएल के {len(v['seasons'])} सीज़न की मेज़बानी। स्टेडियम का इतिहास और विवरण हिंदी में।")[:300]
+    desc = (f"{v['name']} ({v['city']}) — PKL kabaddi venue, capacity {v['capacity']:,}, hosted {len(v['seasons'])} seasons. "
+            f"{v['name_hi']}: स्थान, क्षमता और मेज़बान टीमें हिंदी में।")[:160]
     jsonld = {"@context": "https://schema.org", "@type": "StadiumOrArena", "name": v['name'],
               "alternateName": v['name_hi'], "url": f"{SITE}/venues/{v['slug']}/",
               "maximumAttendeeCapacity": v['capacity'],
@@ -1287,8 +1321,8 @@ def build_auctions_index():
       {expensive_tbl}
       <div class="mt-8">{section_title('सीज़न-दर-सीज़न नीलामी', 'किसी भी सीज़न की टॉप बोलियाँ देखने के लिए चुनें')}</div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards}</div>"""
-    desc = ("पीकेएल खिलाड़ी नीलामी का इतिहास — पवन सहरावत, प्रदीप नरवाल समेत सर्वकालिक सबसे महँगे "
-            "खिलाड़ी और हर सीज़न की टॉप बोलियाँ हिंदी में।")
+    desc = ("PKL auction history — most expensive players, Pawan Sehrawat, Pardeep Narwal top bids. "
+            "पीकेएल नीलामी — सर्वकालिक सबसे महँगे खिलाड़ी और हर सीज़न की टॉप बोलियाँ।")
     write("auctions/index.html", page("पीकेएल नीलामी इतिहास — सबसे महँगे खिलाड़ी | कबड्डी आँकड़े",
                                        desc, "/auctions/", depth, body, active="auctions",
                                        trail=[("होम", "../"), ("नीलामी", None)]), "0.8")
@@ -1344,8 +1378,8 @@ def build_auction_season(n):
     <div class="mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी नीलामी</a></div>
     {navs}
     """
-    desc = (f"पीकेएल सीज़न {n} ({a['year']}) खिलाड़ी नीलामी — सबसे महँगा {top['name_hi']} "
-            f"({fmt_price(top['lakh'])})। टॉप बोलियाँ, टीम और क़ीमत हिंदी में।")[:300]
+    desc = (f"PKL Season {n} ({a['year']}) auction — top buy {top['name']} at {fmt_price(top['lakh'])}. "
+            f"सीज़न {n} नीलामी: टॉप बोलियाँ, टीम और क़ीमत हिंदी में।")[:160]
     write(f"auctions/season-{n}/index.html",
           page(f"पीकेएल सीज़न {n} नीलामी ({a['year']}) — टॉप बोलियाँ | कबड्डी आँकड़े",
                desc, f"/auctions/season-{n}/", depth, body, active="auctions",
@@ -1412,8 +1446,8 @@ def build_allstar_index():
         "शोकेस का इतिहास है — कब हुए, किसने जीते, किन सितारों ने हिस्सा लिया और कौन सर्वश्रेष्ठ रहा।",
       ])}
       <div class="grid sm:grid-cols-2 gap-3">{cards}</div>"""
-    desc = ("पीकेएल ऑल-स्टार और प्रदर्शनी मुक़ाबलों का इतिहास — सीज़न 5 और सीज़न 6 शोकेस के "
-            "परिणाम, टीम रोस्टर, MVP और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")
+    desc = ("PKL All-Star showcase games — exhibition match results, rosters, MVPs. "
+            "पीकेएल ऑल-स्टार मुक़ाबलों का इतिहास — परिणाम, रोस्टर और MVP हिंदी में।")
     write("all-star/index.html", page("पीकेएल ऑल-स्टार मुक़ाबले — रोस्टर व MVP | कबड्डी आँकड़े",
                                        desc, "/all-star/", depth, body, active="allstar",
                                        trail=[("होम", "../"), ("ऑल-स्टार", None)]), "0.8")
@@ -1493,8 +1527,8 @@ def build_allstar_game(g):
     <div class="mt-6"><a href="../" class="hi text-kb-orange font-semibold hover:underline">← सभी ऑल-स्टार मुक़ाबले</a></div>
     {navs}
     """
-    desc = (f"{g['title_hi']} ({g['year']}) — {g['subtitle_hi']}। {win['name_hi']} विजयी "
-            f"{g['teamA']['score']}–{g['teamB']['score']}, MVP {g['mvp']['name_hi']}। टीम रोस्टर और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")[:300]
+    desc = (f"PKL All-Star {g['season']} ({g['year']}) — {win['name_hi']} won {g['teamA']['score']}–{g['teamB']['score']}, MVP {g['mvp']['name']}. "
+            f"रोस्टर और सर्वश्रेष्ठ खिलाड़ी हिंदी में।")[:160]
     write(f"all-star/{g['slug']}/index.html",
           page(f"{g['title_hi']} — रोस्टर व परिणाम",
                desc, f"/all-star/{g['slug']}/", depth, body, active="allstar",
@@ -1543,7 +1577,8 @@ def build_thisday():
                  f'<div class="hi text-sm text-kb-text mt-1">{esc(evs[0][1])}{(" · और " + str(len(evs)-1) + " घटना") if len(evs)>1 else ""}</div></a>')
     body = f"""{page_h1('आज के दिन कबड्डी में', 'कबड्डी इतिहास की यादगार तारीख़ें')}
       <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{rows}</section>"""
-    desc = "आज के दिन कबड्डी में — पीकेएल फ़ाइनल, रिकॉर्ड और कबड्डी इतिहास की यादगार घटनाएँ तारीख़ के अनुसार हिंदी में।"
+    desc = ("On this day in kabaddi — PKL finals, records, memorable moments by date. "
+            "आज के दिन कबड्डी में — पीकेएल फ़ाइनल और इतिहास की यादगार घटनाएँ हिंदी में।")
     write("aaj-ke-din/index.html", page("आज के दिन कबड्डी में — ऐतिहासिक घटनाएँ | कबड्डी आँकड़े",
                                          desc, "/aaj-ke-din/", depth, body, active="thisday",
                                          trail=[("होम", "../"), ("आज के दिन", None)]), "0.6")

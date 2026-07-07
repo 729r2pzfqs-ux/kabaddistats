@@ -143,6 +143,8 @@ gtag('config', 'G-B3MY8Q8ST7');
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="{robots}">
 <link rel="canonical" href="{esc(canon)}">
+<link rel="alternate" hreflang="hi" href="{esc(canon)}">
+<link rel="alternate" hreflang="x-default" href="{esc(canon)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:url" content="{esc(canon)}">
