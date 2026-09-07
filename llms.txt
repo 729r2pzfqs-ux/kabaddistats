@@ -15,6 +15,7 @@ KabaddiStats.com covers the complete history of the Pro Kabaddi League (PKL) fro
 - 2 PKL All-Star showcase games (Season 5 and Season 6) — rosters, MVPs, results
 - 11 "This Day in Kabaddi" (आज के दिन) historical date pages
 - All-time records and leaderboards, plus international kabaddi (World Cup, Asian Games)
+- Asian Games 2026 (Aichi-Nagoya, 21-26 September) preview — India men's and women's squads, captains and coaches
 - 311 pages total
 - Language: Hindi (Devanagari, lang="hi")
 
@@ -31,7 +32,7 @@ KabaddiStats.com covers the complete history of the Pro Kabaddi League (PKL) fro
 - [Compare](https://kabaddistats.com/compare/index.html): Head-to-head comparisons — player vs player and team rivalries
 - [All-Star](https://kabaddistats.com/all-star/index.html): PKL All-Star showcase games (Season 5 and Season 6) — rosters, MVPs and results
 - [Records](https://kabaddistats.com/records/index.html): All-time leaderboards and kabaddi records
-- [International](https://kabaddistats.com/international/index.html): International kabaddi history — World Cup and Asian Games
+- [International](https://kabaddistats.com/international/index.html): International kabaddi history — World Cup and Asian Games, plus Asian Games 2026 preview with India squads
 - [This Day in Kabaddi](https://kabaddistats.com/aaj-ke-din/index.html): Historical kabaddi events by calendar date (आज के दिन)
 - [About](https://kabaddistats.com/about/index.html): About the site and data sources
 - [Privacy](https://kabaddistats.com/privacy/index.html): Privacy policy

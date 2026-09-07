@@ -10,7 +10,8 @@ from templates import (esc, slug, icon, role_badge, page, SITE, BRAND, BRAND_EN,
 import content as C
 from data import (TEAMS, SEASONS, PLAYERS, PLAYER_BY_ID, RECORDS, RECORD_MILESTONES,
                   WORLD_CUP, ASIAN_GAMES_MEN, ASIAN_GAMES_WOMEN, GLOSSARY, MATCHES,
-                  STANDINGS, VENUES, AUCTIONS, ALL_TIME_EXPENSIVE, ALL_STAR_GAMES)
+                  STANDINGS, VENUES, AUCTIONS, ALL_TIME_EXPENSIVE, ALL_STAR_GAMES,
+                  ASIAN_GAMES_2026, LATEST_UPDATES)
 
 # Wikipedia sameAs links for top players (verified notable PKL players)
 WIKIPEDIA_LINKS = {
@@ -191,6 +192,18 @@ def build_home():
                        f'rounded-lg border border-kb-border bg-white text-sm text-kb-ink hover:border-kb-orange transition">'
                        f'<span class="w-2.5 h-2.5 rounded-full" style="background:{t["color"]}"></span>{esc(t["name_hi"])}</a>')
 
+    # latest updates strip
+    update_cards = ""
+    for (dlabel, title, text, href) in LATEST_UPDATES:
+        link = (f'<a href="{href}" class="hi text-kb-orange text-sm font-semibold '
+                f'hover:underline mt-2 inline-block">विस्तार से →</a>') if href else ""
+        update_cards += f"""<div class="bg-kb-card border border-kb-border rounded-xl p-4">
+          <div class="hi text-xs text-kb-text mb-1">{dlabel}</div>
+          <h3 class="hi font-heading font-bold text-kb-ink mb-1.5 leading-snug">{title}</h3>
+          <p class="hi text-sm text-kb-text leading-relaxed">{text}</p>{link}</div>"""
+    updates_html = f"""{section_title('ताज़ा अपडेट', 'कबड्डी जगत की हालिया प्रमुख ख़बरें')}
+    <section class="grid sm:grid-cols-2 gap-3 mb-10">{update_cards}</section>"""
+
     total_raid = sum(p["raid"] for p in PLAYERS)
     body = f"""
     <section class="text-center py-8 sm:py-12">
@@ -208,6 +221,7 @@ def build_home():
       {stat('कुल रेड अंक', f'{total_raid/1000:.0f}K+')}
     </section>
     {champ_html}
+    {updates_html}
     {section_title('टीमें', 'सभी 12 प्रो कबड्डी लीग फ़्रेंचाइज़ी')}
     <section class="flex flex-wrap gap-2 mb-10">{team_chips}</section>
     {section_title('चर्चित खिलाड़ी', 'करियर प्रदर्शन के आधार पर शीर्ष खिलाड़ी')}
@@ -1138,26 +1152,60 @@ def build_international():
     ag_women = [[y, f'<span class="hi font-medium">{w}</span>', f'<span class="hi text-kb-text">{ru}</span>',
                  f'<span class="tnum">{sc}</span>'] for (y, w, ru, sc) in ASIAN_GAMES_WOMEN]
 
+    ag26 = ASIAN_GAMES_2026
+    def _squad_rows(squad, link):
+        rows = []
+        for (name_en, name_hi, tag) in squad:
+            if link:
+                nm = pname_link(name_en, depth)
+                if "<a " not in nm:
+                    nm += f'<span class="hi text-kb-text text-xs ml-1">{name_hi}</span>'
+            else:
+                nm = f'<span class="hi font-medium text-kb-ink">{name_hi}</span>'
+            tag_html = (f'<span class="hi text-xs font-semibold text-kb-orange">{tag}</span>'
+                        if tag else '<span class="text-kb-text text-xs">—</span>')
+            rows.append([nm, tag_html])
+        return rows
+    men_rows = _squad_rows(ag26["men_squad"], link=True)
+    women_rows = _squad_rows(ag26["women_squad"], link=False)
+    ag26_html = f"""
+      <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>एशियाई खेल 2026 — आगामी</h2>
+      <div class="bg-kb-card border border-kb-border rounded-xl p-4 sm:p-5 mb-4">
+        <div class="grid sm:grid-cols-3 gap-3 text-sm mb-3">
+          <div><div class="hi text-xs text-kb-text">तिथियाँ (कबड्डी)</div><div class="hi font-semibold text-kb-ink">{ag26['dates_hi']}</div></div>
+          <div><div class="hi text-xs text-kb-text">मेज़बान</div><div class="hi font-semibold text-kb-ink">{ag26['host_hi']}</div></div>
+          <div><div class="hi text-xs text-kb-text">गत चैंपियन</div><div class="hi font-semibold text-kb-ink">भारत (पुरुष व महिला)</div></div>
+        </div>
+        <p class="hi text-sm text-kb-text leading-relaxed mb-2">पुरुष वर्ग में {len(ag26['men_nations_hi'])} देश — {", ".join(ag26['men_nations_hi'])} — और महिला वर्ग में {len(ag26['women_nations_hi'])} देश — {", ".join(ag26['women_nations_hi'])} — भाग ले रहे हैं। भारत ने अगस्त के अंत में दोनों वर्गों के लिए 12-12 सदस्यीय दल घोषित किए।</p>
+        <p class="hi text-sm text-kb-text leading-relaxed">कोचिंग स्टाफ़ — पुरुष: {ag26['men_coach_hi']} · महिला: {ag26['women_coach_hi']}</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <div><h3 class="hi font-heading font-bold text-kb-ink mb-2">भारतीय पुरुष टीम</h3>{table(['खिलाड़ी', 'भूमिका'], men_rows)}</div>
+        <div><h3 class="hi font-heading font-bold text-kb-ink mb-2">भारतीय महिला टीम</h3>{table(['खिलाड़ी', 'भूमिका'], women_rows)}</div>
+      </div>"""
+
     body = f"""{page_h1('अंतरराष्ट्रीय कबड्डी', 'विश्व कप और एशियाई खेलों में भारत का दबदबा')}
       {C.prose([
         "कबड्डी में भारत का अंतरराष्ट्रीय रिकॉर्ड बेजोड़ रहा है। अंतरराष्ट्रीय कबड्डी "
         "महासंघ (IKF) के मानक-शैली विश्व कप के तीनों संस्करण भारत ने जीते हैं, और हर "
         "बार फ़ाइनल में ईरान को हराया। एशियाई खेलों में भी भारत ने अधिकांश स्वर्ण पदक "
         "अपने नाम किए हैं, हालाँकि 2018 जकार्ता में ईरान ने पुरुष और महिला दोनों वर्गों "
-        "में स्वर्ण जीतकर बड़ा उलटफेर किया।"])}
+        "में स्वर्ण जीतकर बड़ा उलटफेर किया। अगला बड़ा पड़ाव — एशियाई खेल 2026 "
+        "(आइची-नागोया, जापान), जहाँ भारत दोनों वर्गों में अपने ख़िताब की रक्षा करेगा।"])}
+      {ag26_html}
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>कबड्डी विश्व कप (मानक शैली)</h2>
       <div class="mb-8">{table(['वर्ष', 'विजेता', 'उपविजेता', 'स्कोर', 'मेज़बान'], wc_rows)}</div>
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>एशियाई खेल — पुरुष स्वर्ण</h2>
       <div class="mb-8">{table(['वर्ष', 'स्वर्ण पदक विजेता'], ag_men)}</div>
       <h2 class="hi font-heading font-bold text-lg text-kb-ink mb-3 flex items-center gap-2"><span class="w-1.5 h-5 rounded mat-stripe inline-block"></span>एशियाई खेल — महिला स्वर्ण</h2>
       {table(['वर्ष', 'स्वर्ण', 'रजत', 'फ़ाइनल स्कोर'], ag_women)}"""
-    desc = ("International kabaddi — World Cup winners, Asian Games gold medals, India vs Iran. "
-            "कबड्डी विश्व कप विजेता और एशियाई खेलों में भारत के पदक हिंदी में।")
+    desc = ("International kabaddi — World Cup winners, Asian Games 2026 India squads, medals. "
+            "कबड्डी विश्व कप विजेता, एशियाई खेल 2026 भारतीय टीम और पदक हिंदी में।")
     write("international/index.html", page("अंतरराष्ट्रीय कबड्डी — विश्व कप व एशियाई खेल | कबड्डी आँकड़े",
                                            desc, "/international/", depth, body, active="seasons",
                                            trail=[("होम", "../"), ("अंतरराष्ट्रीय कबड्डी", None)]), "0.6")
     search_rows.append(["अंतरराष्ट्रीय कबड्डी", "/international/", "पेज",
-                        "international world cup asian games india iran kabaddi antarrashtriya"])
+                        "international world cup asian games 2026 india iran kabaddi antarrashtriya squad"])
 
 
 # ================================================================ VENUES ======
